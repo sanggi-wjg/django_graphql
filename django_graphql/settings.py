@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     "graphene_django",
     "django_filters",
     "app.articles",
-    'app.ingredients'
 ]
 
 MIDDLEWARE = [
@@ -123,5 +122,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 GRAPHENE = {
-    "SCHEMA": "django_graphql.schema.schema",
+    # "SCHEMA": "django_graphql.schema.schema",
+    "ARTICLE_SCHEMA": "app.articles.schema.article_schema",
 }
