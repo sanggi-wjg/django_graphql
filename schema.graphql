@@ -1,0 +1,15 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+"Represents an object which can take actions on GitHub. Typically a User or Bot."
+interface Article {
+    "A URL pointing to the actor's public avatar."
+    Category(
+        Name: String
+    ): URI!
+    "The username of the actor."
+    title: String!
+
+}

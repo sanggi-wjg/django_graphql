@@ -1,9 +1,14 @@
 import graphene
-from graphene import relay
+from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
-from graphene_django.filter import DjangoFilterConnectionField
 
 from app.articles.models import Article, Comment
+
+
+class UserNode(DjangoObjectType):
+    class Meta:
+        model = User
+        exclude = ('is_superuser', 'is_staff', 'password')
 
 
 class ArticleNode(DjangoObjectType):
@@ -31,12 +36,35 @@ class CommentNode(DjangoObjectType):
     class Meta:
         model = Comment
         # interfaces = (relay.Node,)
+        # fields = "__all__"
+        # exclude = ("datetime_updated",)
         fields = (
             'id', 'content', 'creator', 'article', 'datetime_created', 'datetime_updated'
         )
         filter_fields = {
             'content': ['contains', ],
         }
+
+
+class CommentMutation(graphene.Mutation):
+    class Arguments:
+        comment_id = graphene.ID()
+        content = graphene.String(required=True)
+
+    comment = graphene.Field(CommentNode)
+
+    @classmethod
+    def mutate(cls, root, info, comment_id: int, content: str):
+        comment = Comment.objects.get(id=comment_id)
+        comment.content = content
+        comment.save()
+        print(root)
+        print(dir(root))
+        print(root.__dict__)
+        print(info)
+        print(dir(info))
+        print(info.__dict__)
+        return CommentMutation(comment=comment)
 
 
 class ArticleQuery(graphene.ObjectType):
@@ -52,11 +80,8 @@ class ArticleQuery(graphene.ObjectType):
     )
     article_by_id = graphene.Field(
         ArticleNode,
-        article_id=graphene.Int(required=True)
+        articleId=graphene.Int(required=True)
     )
-
-    def resolve_article_by_id(self, article_id: int):
-        return Article.objects.get(id=article_id)
 
     def resolve_articles(
             self, info,
@@ -72,5 +97,12 @@ class ArticleQuery(graphene.ObjectType):
         print(articles.query)
         return articles
 
+    def resolve_article_by_id(self, info, articleId: int):
+        return Article.objects.select_related('creator').get(id=articleId)
 
-article_schema = graphene.Schema(query=ArticleQuery)
+
+class Mutation(graphene.ObjectType):
+    update_comment = CommentMutation.Field()
+
+
+article_schema = graphene.Schema(query=ArticleQuery, mutation=Mutation)

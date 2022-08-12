@@ -1,0 +1,10 @@
+query {
+  articles {
+    title
+    greeting
+  }
+  articleById(articleId: 1) {
+    title
+  }
+}
+
