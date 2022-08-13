@@ -122,6 +122,34 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 GRAPHENE = {
-    # "SCHEMA": "django_graphql.schema.schema",
-    "ARTICLE_SCHEMA": "app.articles.schema.article_schema",
+    "SCHEMA": "django_graphql.schema.schema",
+    'SCHEMA_OUTPUT': 'schema.json',
+    'SCHEMA_INDENT': 2,
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s-%(module)s-%(levelname)s :: %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s :: %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'propagate': False,
+            'level': 'DEBUG'
+        },
+    }
 }
