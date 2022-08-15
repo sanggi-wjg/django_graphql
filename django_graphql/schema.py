@@ -1,4 +1,5 @@
 import graphene
+from graphene_django.rest_framework.mutation import SerializerMutation
 
 from app.articles.mutations import CommentMutation
 from app.articles.queries import ArticleQuery, CommentQuery

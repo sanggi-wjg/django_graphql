@@ -35,15 +35,30 @@ class UpdateCommentMutation(graphene.Mutation):
         comment = Comment.objects.get(id=comment_id)
         comment.content = content
         comment.save()
-        print(root)
-        print(dir(root))
-        print(root.__dict__)
-        print(info)
-        print(dir(info))
-        print(info.__dict__)
         return UpdateCommentMutation(comment=comment)
+
+
+class DeleteCommuteMutation(graphene.Mutation):
+    comment = graphene.Field(CommentNode)
+
+    class Arguments:
+        comment_id = graphene.ID()
+
+    @classmethod
+    def mutate(cls, root, info, comment_id: int):
+        comment = Comment.objects.get(id=comment_id)
+        comment.content = "삭제된 댓글 입니다."
+        comment.save()
+        return DeleteCommuteMutation(comment)
 
 
 class CommentMutation(graphene.ObjectType):
     create_comment = CreateCommentMutation.Field()
     update_comment = UpdateCommentMutation.Field()
+    delete_comment = DeleteCommuteMutation.Field()
+
+# class CommentMutation(SerializerMutation):
+#     class Meta:
+#         serializer_class = CommentSerializer
+#         model_operation = ('create', 'update')
+#         lookup_field = 'id'

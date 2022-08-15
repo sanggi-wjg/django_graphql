@@ -3,6 +3,7 @@ asgiref==3.5.2
 colorful-print==0.0.6
 Django==3.2.15
 django-filter==22.1
+djangorestframework==3.13.1
 graphene==2.1.9
 graphene-django==2.15.0
 graphql-core==2.3.2

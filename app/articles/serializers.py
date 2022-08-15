@@ -8,3 +8,4 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
+        fields = ('id', 'content', 'datetime_created', 'datetime_updated')
