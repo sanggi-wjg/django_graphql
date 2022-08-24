@@ -5,12 +5,11 @@ from django.utils.text import slugify
 
 class ArticleManager(models.Manager):
 
-    def create_article(self, title: str, content: str, creaotr_id: int):
+    def create_article(self, title: str, content: str, creator_id: int):
         try:
-            user = User.objects.get(pk=creaotr_id)
+            user = User.objects.get(pk=creator_id)
         except User.DoesNotExist:
-            # raise exception
-            return None
+            raise User.DoesNotExist(f"this user not exist: {creator_id}")
 
         new_article = self.model(
             title=title,

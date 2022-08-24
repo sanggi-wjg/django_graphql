@@ -1,42 +1,62 @@
 import graphene
-from django.contrib.auth.models import User
 
 from app.articles.models import Article
 from app.articles.types import ArticleType
 
 
+# class BaseMutation(graphene.Mutation):
+#     class Meta:
+#         abstract = True
+#
+#     @classmethod
+#     def perform_mutation(cls, root, info, **data):
+#         print(root)
+#         print(info)
+#         print(data)
+
+
+class ArticleInputBase(graphene.InputObjectType):
+    title = graphene.String(required=True)
+    content = graphene.String(required=True)
+
+
+class CreateArticleInput(ArticleInputBase):
+    creator_id = graphene.ID(required=True)
+
+
 class CreateArticleMutation(graphene.Mutation):
     class Arguments:
-        title = graphene.String(required=True)
-        content = graphene.String(required=True)
-        creator_id = graphene.ID()
+        input = CreateArticleInput(required=True)
 
     article = graphene.Field(ArticleType)
 
     @classmethod
-    def mutate(cls, root, info, title: str, content: str, creator_id: int):
+    def mutate(cls, root, info, input: dict):
         new_article = Article.objects.create_article(
-            title, content, creator_id
+            title=input.get('title'),
+            content=input.get('content'),
+            creator_id=input.get('creator_id')
         )
         return CreateArticleMutation(article=new_article)
 
 
 class UpdateArticleMutation(graphene.Mutation):
     class Arguments:
-        article_id = graphene.ID()
-        content = graphene.String(required=True)
+        article_id = graphene.ID(required=True)
+        input = ArticleInputBase(required=True)
 
     article = graphene.Field(ArticleType)
 
     @classmethod
-    def mutate(cls, root, info, article_id: int, content: str):
+    def mutate(cls, root, info, article_id: int, input: dict):
         try:
             article = Article.objects.get(pk=article_id)
-            article.content = content
+            article.title = input.get('title', article.title)
+            article.content = input.get('content', article.content)
             article.save()
         except Article.DoesNotExist:
-            # raise exception
-            raise Article.DoesNotExist("1231231231")
+            raise Article.DoesNotExist(f"this article not exist: {article_id}")
+
         return UpdateArticleMutation(article=article)
 
 
@@ -44,16 +64,13 @@ class DeleteArticleMutation(graphene.Mutation):
     class Arguments:
         article_id = graphene.ID()
 
-    # 204 No Content?
-    # 204 No Content?
-    success = graphene.Boolean()
+    is_success = graphene.Boolean()
 
     @classmethod
     def mutate(cls, root, info, article_id: int):
         article = Article.objects.filter(pk=article_id)
         if not article.exists():
-            # raise exception
-            return False
+            raise Article.DoesNotExist(f"this article not exist: {article_id}")
 
         article.delete()
-        return True
+        return DeleteArticleMutation(is_success=True)

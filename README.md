@@ -47,56 +47,55 @@
 
 ### Create
 ```graphql
-
-mutation {
-  createArticle(content: "string", creatorId: "1", title: "string") {
+mutation CreateArticle($input:CreateArticleInput!){
+  createArticle(input: $input){
     article {
       id
       title
-      slug
       content
-      creator {
-        id
-        username
-        email
-      }
-      datetimeCreated
-      datetimeUpdated
-      comments {
-        edges {
-          node {
-            id
-            content
-          }
-        }
-      }
     }
+  }
+}
+
+{ 
+  "input": {
+    "title": "string2222", 
+    "content": "string2222222",  
+    "creatorId": "1"
   }
 }
 ```
 
 ### Update
 ```graphql
-mutation {
-  updateArticle(content: "string11111111111", articleId: 5) {
+mutation UpdateArticle($id: ID!, $input:ArticleInputBase!){
+  updateArticle(articleId:$id, input: $input){
     article {
       id
       title
-      slug
       content
-      datetimeCreated
-      datetimeUpdated
     }
+  }
+}
+
+{ 
+  "id": "3",
+  "input": {
+    "title": "string2222", 
+    "content": "string2222222"
   }
 }
 ```
 
 ### Delete
 ```graphql
-mutation {
-  deleteArticle(articleId: 4) {
-    success
+mutation DeleteArticle($id:ID!){
+  deleteArticle(articleId:$id){
+    isSuccess
   }
 }
 
+{ 
+  "id": "6"
+}
 ```
