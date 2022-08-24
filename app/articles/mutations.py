@@ -1,64 +1,59 @@
 import graphene
 from django.contrib.auth.models import User
 
-from app.articles.models import Comment, Article
-from app.articles.nodes import CommentNode
+from app.articles.models import Article
+from app.articles.types import ArticleType
 
 
-class CreateCommentMutation(graphene.Mutation):
-    comment = graphene.Field(CommentNode)
-
+class CreateArticleMutation(graphene.Mutation):
     class Arguments:
+        title = graphene.String(required=True)
         content = graphene.String(required=True)
-        creator_id = graphene.Int(required=True)
-        article_id = graphene.Int(required=True)
+        creator_id = graphene.ID()
+
+    article = graphene.Field(ArticleType)
 
     @classmethod
-    def mutate(cls, root, info, content: str, creator_id: int, article_id: int):
-        comment = Comment.objects.create(
-            content=content,
-            creator=User.objects.get(id=creator_id),
-            article=Article.objects.get(id=article_id)
+    def mutate(cls, root, info, title: str, content: str, creator_id: int):
+        new_article = Article.objects.create_article(
+            title, content, creator_id
         )
-        return CreateCommentMutation(comment=comment)
+        return CreateArticleMutation(article=new_article)
 
 
-class UpdateCommentMutation(graphene.Mutation):
-    comment = graphene.Field(CommentNode)
-
+class UpdateArticleMutation(graphene.Mutation):
     class Arguments:
-        comment_id = graphene.ID()
+        article_id = graphene.ID()
         content = graphene.String(required=True)
 
+    article = graphene.Field(ArticleType)
+
     @classmethod
-    def mutate(cls, root, info, comment_id: int, content: str):
-        comment = Comment.objects.get(id=comment_id)
-        comment.content = content
-        comment.save()
-        return UpdateCommentMutation(comment=comment)
+    def mutate(cls, root, info, article_id: int, content: str):
+        try:
+            article = Article.objects.get(pk=article_id)
+            article.content = content
+            article.save()
+        except Article.DoesNotExist:
+            # raise exception
+            raise Article.DoesNotExist("1231231231")
+        return UpdateArticleMutation(article=article)
 
 
-class DeleteCommuteMutation(graphene.Mutation):
-    comment = graphene.Field(CommentNode)
-
+class DeleteArticleMutation(graphene.Mutation):
     class Arguments:
-        comment_id = graphene.ID()
+        article_id = graphene.ID()
+
+    # 204 No Content?
+    # 204 No Content?
+    success = graphene.Boolean()
 
     @classmethod
-    def mutate(cls, root, info, comment_id: int):
-        comment = Comment.objects.get(id=comment_id)
-        comment.content = "삭제된 댓글 입니다."
-        comment.save()
-        return DeleteCommuteMutation(comment)
+    def mutate(cls, root, info, article_id: int):
+        article = Article.objects.filter(pk=article_id)
+        if not article.exists():
+            # raise exception
+            return False
 
-
-class CommentMutation(graphene.ObjectType):
-    create_comment = CreateCommentMutation.Field()
-    update_comment = UpdateCommentMutation.Field()
-    delete_comment = DeleteCommuteMutation.Field()
-
-# class CommentMutation(SerializerMutation):
-#     class Meta:
-#         serializer_class = CommentSerializer
-#         model_operation = ('create', 'update')
-#         lookup_field = 'id'
+        article.delete()
+        return True

@@ -1,23 +1,40 @@
 import graphene
-from graphene_django.rest_framework.mutation import SerializerMutation
 
-from app.articles.mutations import CommentMutation
-from app.articles.queries import ArticleQuery, CommentQuery
+from app.articles.mutations import (
+    UpdateArticleMutation, CreateArticleMutation, DeleteArticleMutation
+)
+from app.articles.queries import (
+    ArticleQuery,
+    UserQuery,
+    # CommentQuery
+)
 
 
 class Query(
     ArticleQuery,
-    CommentQuery,
+    UserQuery,
+    # CommentQuery,
     graphene.ObjectType
 ):
     pass
 
 
-class Mutation(
-    CommentMutation,
-    graphene.ObjectType
-):
-    pass
+# class Mutation(
+#     CreateArticleMutation,
+#     UpdateArticleMutation,
+#     DeleteArticleMutation,
+#     graphene.ObjectType
+# ):
+#     pass
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+class Mutation(graphene.ObjectType):
+    create_article = CreateArticleMutation.Field()
+    update_article = UpdateArticleMutation.Field()
+    delete_article = DeleteArticleMutation.Field()
+
+
+schema = graphene.Schema(
+    query=Query,
+    mutation=Mutation
+)
