@@ -23,8 +23,8 @@ class ArticleManager(models.Manager):
 class Article(models.Model):
     objects = ArticleManager()
 
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, allow_unicode=True)
+    title = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=100, allow_unicode=True, db_index=True)
     content = models.TextField()
 
     creator = models.ForeignKey("auth.User", on_delete=models.CASCADE, related_name="articles")
@@ -50,9 +50,15 @@ class Comment(models.Model):
     article = models.ForeignKey(
         "Article", on_delete=models.CASCADE, related_name="comments"
     )
+    reply = models.ManyToManyField(
+        "self", related_name="replied", symmetrical=False
+    )
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.content
+
+    def reply_comment(self, comment):
+        self.reply.add(comment)

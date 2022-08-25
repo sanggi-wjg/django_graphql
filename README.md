@@ -5,9 +5,10 @@
 
 ### Select
 ```graphql
-
 {
-  articleAll {
+  articleAll(
+    title:"11111"
+  ) {
     pageInfo {
       hasNextPage
       hasPreviousPage
@@ -34,8 +35,22 @@
               content
               datetimeCreated
               datetimeUpdated
+              creator {
+                id
+                username
+                email
+              }
+              replied {
+                edges{
+                  node {
+                    id
+                    content
+                  }
+                }
+              }
             }
           }
+          
         }
       }
       cursor
