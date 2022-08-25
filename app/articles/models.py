@@ -44,6 +44,15 @@ class Article(models.Model):
     def comment_count(self):
         return self.comments.count()
 
+    @property
+    def masking_creator_username(self):
+        if hasattr(self, 'creator'):
+            return f"".join([
+                name if i % 2 == 0 else '*'
+                for i, name in enumerate(list(self.creator.username))
+            ])
+        return ""
+
 
 class CommentManager(models.Manager):
 

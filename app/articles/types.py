@@ -44,10 +44,14 @@ class ArticleType(DjangoObjectType):
         except queryset.DoesNotExist:
             return None
 
-    article_comment_count = graphene.Int(description="글 댓글 개수")
+    comment_count = graphene.Int(description="글 댓글 개수")
+    masking_creator_username = graphene.String(description="마스킹 된 유저 이름")
 
-    def resolve_article_comment_count(self, info):
+    def resolve_comment_count(self, info):
         return self.comment_count
+
+    def resolve_masking_creator_username(self, info):
+        return self.masking_creator_username
 
 
 class CommentType(DjangoObjectType):
