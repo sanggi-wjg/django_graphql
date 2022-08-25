@@ -35,25 +35,3 @@ class ArticleQuery(graphene.ObjectType):
     article = relay.Node.Field(ArticleType)
 
     article_all = DjangoFilterConnectionField(ArticleType)
-
-    # article_all = graphene.List(ArticleType)
-    # article_by_id = graphene.Field(ArticleType)
-
-    # def resolve_article_all(self, info):
-    #     articles = Article.objects.select_related(
-    #         'creator'
-    #     ).prefetch_related(
-    #         'comments', 'comments__creator'
-    #     )
-    #     return articles.all()
-
-    # def resolve_article_by_id(self, info, article_id: int):
-    #     try:
-    #         return Article.objects.select_related(
-    #             'creator'
-    #         ).prefetch_related(
-    #             'comments', 'comments__creator'
-    #         ).get(pk=article_id)
-    #     except Article.DoesNotExist:
-    #         # raise exception
-    #         return None

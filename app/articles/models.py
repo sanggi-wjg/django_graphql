@@ -50,15 +50,9 @@ class Comment(models.Model):
     article = models.ForeignKey(
         "Article", on_delete=models.CASCADE, related_name="comments"
     )
-    reply = models.ManyToManyField(
-        "self", related_name="replied", symmetrical=False
-    )
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.content
-
-    def reply_comment(self, comment):
-        self.reply.add(comment)

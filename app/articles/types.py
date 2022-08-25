@@ -1,11 +1,10 @@
-import graphene
 from django.contrib.auth.models import User
 from graphene import relay
 from graphene_django import DjangoObjectType
 
-from app.articles.colorful import yellow, cyan
 from app.articles.filters import ArticleFilter
 from app.articles.models import Article, Comment
+from app.core.base_connections import PaginationConnection
 
 
 class UserType(DjangoObjectType):
@@ -17,22 +16,7 @@ class UserType(DjangoObjectType):
             "username": ('exact', "contains"),
             "email": ('exact', "contains"),
         }
-
-
-class PaginationConnection(graphene.Connection):
-    class Meta:
-        abstract = True
-
-    total_count = graphene.Int()
-    edge_count = graphene.Int()
-
-    @classmethod
-    def resolve_total_count(cls, root, info, **kwargs):
-        return root.length
-
-    @classmethod
-    def resolve_edge_count(cls, root, info, **kwargs):
-        return len(root.edges)
+        connection_class = PaginationConnection
 
 
 class ArticleType(DjangoObjectType):
@@ -61,3 +45,10 @@ class CommentType(DjangoObjectType):
             "content": ('contains',)
         }
         interfaces = (relay.Node,)
+        connection_class = PaginationConnection
+
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        return queryset.select_related(
+            'creator'
+        ).all()

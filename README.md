@@ -76,41 +76,46 @@ mutation CreateArticle($input:CreateArticleInput!){
   "input": {
     "title": "string2222", 
     "content": "string2222222",  
-    "creatorId": "1"
+    "creatorId": 1
   }
 }
 ```
 
 ### Update
 ```graphql
-mutation UpdateArticle($id: ID!, $input:ArticleInputBase!){
-  updateArticle(articleId:$id, input: $input){
+mutation UpdateArticle($articleId:ID!, $input:ArticleInputBase!){
+  updateArticle(articleId:$articleId, input:$input) {
     article {
       id
       title
+      slug
       content
+      datetimeCreated
+      datetimeUpdated
     }
   }
 }
 
+
 { 
-  "id": "3",
+  "articleId": 1210,
   "input": {
-    "title": "string2222", 
-    "content": "string2222222"
+    "title": "123123222222222",
+    "content": "12312321323212112321331"
   }
 }
 ```
 
 ### Delete
 ```graphql
-mutation DeleteArticle($id:ID!){
-  deleteArticle(articleId:$id){
+mutation DeleteArticle($articleId:ID!){
+  deleteArticle(articleId:$articleId) {
     isSuccess
   }
 }
 
+
 { 
-  "id": "6"
+  "articleId": 1209
 }
 ```
