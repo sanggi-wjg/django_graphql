@@ -1,7 +1,7 @@
 import django_filters
 from django.contrib.auth.models import User
 
-from app.articles.models import Article
+from app.articles.models import Article, Comment
 
 
 class ArticleFilter(django_filters.FilterSet):
@@ -23,8 +23,17 @@ class ArticleFilter(django_filters.FilterSet):
             ('datetime_created', 'datetime_updated', 'title', 'content')
         )
     )
-    # default_order = ('-datetime_created', '-datetime_updated')
 
     @property
     def qs(self):
         return super(ArticleFilter, self).qs.filter()
+
+
+class CommentFilter(django_filters.FilterSet):
+    class Meta:
+        model = Comment
+        fields = (
+            "content", "creator", "datetime_created", "datetime_updated"
+        )
+
+    article = django_filters.ModelChoiceFilter(queryset=Article.objects.filter().all())

@@ -1,7 +1,7 @@
 import graphene
 
-from app.articles.models import Article
-from app.articles.types import ArticleType
+from app.articles.models import Article, Comment
+from app.articles.types import ArticleType, CommentType
 
 
 # class BaseMutation(graphene.Mutation):
@@ -74,3 +74,28 @@ class DeleteArticleMutation(graphene.Mutation):
 
         article.delete()
         return DeleteArticleMutation(is_success=True)
+
+
+class CommentInputBase(graphene.InputObjectType):
+    content = graphene.String(required=True)
+
+
+class CreateCommentInput(CommentInputBase):
+    user_id = graphene.ID(required=True)
+    article_id = graphene.ID(required=True)
+
+
+class CreateCommentMutation(graphene.Mutation):
+    class Arguments:
+        input = CreateCommentInput(required=True)
+
+    comment = graphene.Field(CommentType)
+
+    @classmethod
+    def mutate(cls, root, info, input: dict):
+        new_comment = Comment.objects.create_comment(
+            input.get('content'),
+            input.get('user_id'),
+            input.get('article_id')
+        )
+        return cls(comment=new_comment)

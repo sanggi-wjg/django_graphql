@@ -40,8 +40,34 @@ class Article(models.Model):
         self.slug = slugify(self.title)
         super(Article, self).save(force_insert, force_update, using, update_fields)
 
+    @property
+    def comment_count(self):
+        return self.comments.count()
+
+
+class CommentManager(models.Manager):
+
+    def create_comment(self, content: str, user_id: int, article_id: int):
+        try:
+            article = Article.objects.get(pk=article_id)
+            user = User.objects.get(pk=user_id)
+        except Article.DoesNotExist:
+            raise Article.DoesNotExist(f"this article not exist: {article_id}")
+        except User.DoesNotExist:
+            raise User.DoesNotExist(f"this user not exist: {user_id}")
+
+        new_comment = self.model(
+            content=content,
+            article=article,
+            creator=user
+        )
+        new_comment.save()
+        return new_comment
+
 
 class Comment(models.Model):
+    objects = CommentManager()
+
     content = models.CharField(max_length=250)
 
     creator = models.ForeignKey(

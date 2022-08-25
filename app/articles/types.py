@@ -1,10 +1,12 @@
+import graphene
 from django.contrib.auth.models import User
 from graphene import relay
 from graphene_django import DjangoObjectType
 
-from app.articles.filters import ArticleFilter
+from app.articles.filters import ArticleFilter, CommentFilter
 from app.articles.models import Article, Comment
 from app.core.base_connections import PaginationConnection
+from app.core.colorful import cyan, yellow
 
 
 class UserType(DjangoObjectType):
@@ -32,23 +34,47 @@ class ArticleType(DjangoObjectType):
             'creator'
         ).prefetch_related(
             'comments', 'comments__creator',
-            'comments__replied'
         ).all()
+
+    @classmethod
+    def get_node(cls, info, id):
+        queryset = cls.Meta.model.objects
+        try:
+            return queryset.get(pk=id)
+        except queryset.DoesNotExist:
+            return None
+
+    article_comment_count = graphene.Int(description="글 댓글 개수")
+
+    def resolve_article_comment_count(self, info):
+        return self.comment_count
 
 
 class CommentType(DjangoObjectType):
     class Meta:
         model = Comment
-        # fields = ("content", "creator", "datetime_updated")
-        exclude = ("article",)
-        filter_fields = {
-            "content": ('contains',)
-        }
+        # fields = ("article", "content")
+        exclude = (
+            "article",
+        )
+        filterset_class = CommentFilter
         interfaces = (relay.Node,)
         connection_class = PaginationConnection
 
     @classmethod
     def get_queryset(cls, queryset, info):
+        # yellow(info)
+        # cyan(dir(info))
+        # # cyan(info.context)
+        # cyan(info['article__id'])
         return queryset.select_related(
             'creator'
         ).all()
+
+    @classmethod
+    def get_node(cls, info, id):
+        queryset = cls.Meta.model.objects
+        try:
+            return queryset.get(pk=id)
+        except queryset.DoesNotExist:
+            return None
