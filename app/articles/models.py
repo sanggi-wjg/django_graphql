@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import User, AbstractUser, PermissionsMixin
 from django.db import models
 from django.utils.text import slugify
 
@@ -27,7 +28,7 @@ class Article(models.Model):
     slug = models.SlugField(max_length=100, allow_unicode=True, db_index=True)
     content = models.TextField()
 
-    creator = models.ForeignKey("auth.User", on_delete=models.CASCADE, related_name="articles")
+    creator = models.ForeignKey("authentication.User", on_delete=models.CASCADE, related_name="articles")
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     datetime_updated = models.DateTimeField(auto_now=True)
@@ -80,7 +81,7 @@ class Comment(models.Model):
     content = models.CharField(max_length=250)
 
     creator = models.ForeignKey(
-        "auth.User", on_delete=models.CASCADE, related_name="comments"
+        "authentication.User", on_delete=models.CASCADE, related_name="comments"
     )
     article = models.ForeignKey(
         "Article", on_delete=models.CASCADE, related_name="comments"

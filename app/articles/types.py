@@ -1,24 +1,12 @@
 import graphene
-from django.contrib.auth.models import User
 from graphene import relay
-from graphene_django import DjangoObjectType
+from graphene_django import DjangoObjectType, DjangoConnectionField
+from graphql import ResolveInfo
 
 from app.articles.filters import ArticleFilter, CommentFilter
-from app.articles.models import Article, Comment
+from app.articles.models import Article, Comment, User
+from app.authentication.types import UserType
 from app.core.base_connections import PaginationConnection
-from app.core.colorful import cyan, yellow
-
-
-class UserType(DjangoObjectType):
-    class Meta:
-        model = User
-        exclude = ('password', "articles", "comments")
-        interfaces = (relay.Node,)
-        filter_fields = {
-            "username": ('exact', "contains"),
-            "email": ('exact', "contains"),
-        }
-        connection_class = PaginationConnection
 
 
 class ArticleType(DjangoObjectType):
@@ -47,11 +35,18 @@ class ArticleType(DjangoObjectType):
     comment_count = graphene.Int(description="글 댓글 개수")
     masking_creator_username = graphene.String(description="마스킹 된 유저 이름")
 
-    def resolve_comment_count(self, info):
+    dataloader_user = graphene.Field(UserType)
+
+    def resolve_comment_count(self: "Article", info: ResolveInfo):
         return self.comment_count
 
-    def resolve_masking_creator_username(self, info):
+    def resolve_masking_creator_username(self: "Article", info: ResolveInfo):
         return self.masking_creator_username
+
+    async def resolve_articles(self: "User", info: ResolveInfo):
+        return info.context.loaders.user_by_article.load(self.id)
+        # user_loader = UserLoader()
+        # return await user_loader.load(self.id)
 
 
 class CommentType(DjangoObjectType):
@@ -67,10 +62,6 @@ class CommentType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        # yellow(info)
-        # cyan(dir(info))
-        # # cyan(info.context)
-        # cyan(info['article__id'])
         return queryset.select_related(
             'creator'
         ).all()

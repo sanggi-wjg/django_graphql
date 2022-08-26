@@ -1,10 +1,10 @@
 import random
 
-from django.contrib.auth.models import User
 from django.core.management import BaseCommand
 from faker import Faker
 
 from app.articles.models import Article
+from app.authentication.models import User
 
 fake = Faker()
 Faker.seed(0)

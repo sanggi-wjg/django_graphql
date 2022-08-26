@@ -1,7 +1,7 @@
 import django_filters
-from django.contrib.auth.models import User
 
 from app.articles.models import Article, Comment
+from app.authentication.models import User
 
 
 class ArticleFilter(django_filters.FilterSet):
