@@ -6,8 +6,8 @@ from app.articles.mutations import (
 )
 from app.articles.queries import (
     ArticleQuery,
-    UserQuery,
 )
+from app.authentication.queries import UserQuery
 
 
 class Query(
