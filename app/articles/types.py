@@ -1,11 +1,10 @@
 import graphene
 from graphene import relay
-from graphene_django import DjangoObjectType, DjangoConnectionField
+from graphene_django import DjangoObjectType
 from graphql import ResolveInfo
 
 from app.articles.filters import ArticleFilter, CommentFilter
-from app.articles.models import Article, Comment, User
-from app.authentication.types import UserType
+from app.articles.models import Article, Comment
 from app.core.base_connections import PaginationConnection
 
 
@@ -35,7 +34,7 @@ class ArticleType(DjangoObjectType):
     comment_count = graphene.Int(description="글 댓글 개수")
     masking_creator_username = graphene.String(description="마스킹 된 유저 이름")
 
-    dataloader_user = graphene.Field(UserType)
+    # dataloader_user = graphene.Field(UserType)
 
     def resolve_comment_count(self: "Article", info: ResolveInfo):
         return self.comment_count
@@ -43,10 +42,10 @@ class ArticleType(DjangoObjectType):
     def resolve_masking_creator_username(self: "Article", info: ResolveInfo):
         return self.masking_creator_username
 
-    async def resolve_articles(self: "User", info: ResolveInfo):
-        return info.context.loaders.user_by_article.load(self.id)
-        # user_loader = UserLoader()
-        # return await user_loader.load(self.id)
+    # async def resolve_articles(self: "User", info: ResolveInfo):
+    #     return info.context.loaders.user_by_article.load(self.id)
+    # user_loader = UserLoader()
+    # return await user_loader.load(self.id)
 
 
 class CommentType(DjangoObjectType):

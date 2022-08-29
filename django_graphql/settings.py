@@ -38,7 +38,10 @@ INSTALLED_APPS = [
 
     "graphene_django",
     "django_filters",
+
+    "app.authentication",
     "app.articles",
+    "app.core",
 ]
 
 MIDDLEWARE = [
@@ -84,6 +87,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
+AUTH_USER_MODEL = 'authentication.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -125,6 +129,10 @@ GRAPHENE = {
     "SCHEMA": "django_graphql.schema.schema",
     'SCHEMA_OUTPUT': 'schema.json',
     'SCHEMA_INDENT': 2,
+    "MIDDLEWARE": [
+        # 'app.core.middlewares.LoaderMiddleware',
+        # 'app.core.middlewares.SentryMiddleware',
+    ]
 }
 
 LOGGING = {

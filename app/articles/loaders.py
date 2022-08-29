@@ -1,12 +1,35 @@
 from collections import defaultdict
 from typing import List
 
+from django.db.models import Count
 from graphene_django import DjangoObjectType
 from promise import Promise
 from promise.dataloader import DataLoader
 
 from app.articles.models import Article
 from app.authentication.models import User
+from app.core.colorful import cyan
+
+
+class ArticleLoader(DataLoader):
+
+    def batch_load_fn(self, keys):
+        # cyan("ArticleLoader\n", keys)
+        # articles = Article.objects.filter(id__in=keys)
+        # return Promise.resolve([
+        #     articles.get(createor__id=key) for key in keys
+        # ])
+        return Promise.resolve(keys)
+
+
+class ArticleCreatorCountLoader(DataLoader):
+    def batch_load_fn(self, keys):
+        return Promise.resolve(keys)
+        # cyan([key for key in keys])
+        # articles = Article.objects.in_bulk(keys)
+        # return Promise.resolve([
+        #     key for key in keys
+        # ])
 
 
 def generate_loader_by_many_to_many_key(node: DjangoObjectType, attr: str):
