@@ -1,18 +1,29 @@
-## Test
+## pytest-django
+`pytest`를 기반을 한 Django 테스트를 위한 오픈 소스
 
-* https://velog.io/@sangyeon217/pytest-fixture
-* https://towardsdatascience.com/make-your-python-tests-efficient-with-pytest-fixtures-3d7a1892265f
+## Pros and Cons
+### Pros
+* fixture를 통한 단위 테스트 관리
+* Test 실행시마다 Database DDL이 실행 될 필요가 없음
+* Multi-process Test 가능(pytest-xdist)
+* 프로파일링 (pytest-benchmark)  
+* pytest 기반의 수많은 오픈 소스 
 
-### Command 
-* `pytest --fixtures` : 적용된 fixture list print  
+### Cons
+* Django TestCase, APITestCase에 비해 사용을 위한 학습 필요
+* 많은 관련 오픈 소스로 적절한 오픈 소스를 선택하기 위한 시간 소모 
+* 
 
-
-### Run Test 
+## Install
+```python
+pip install pytest pytest-django
 ```
-pytest .
-pytest app/authentication
-pytest -s
-```
+
+## Run Pytest Command 
+* `pytest .`, `pytest`: 현재 폴더 이하 테스트
+* `pytest app/authentication` `pytest app/authentication/tests/test_users.py` : 특정 폴더, 특정 파일 테스트   
+* `pytest --fixtures` : 적용된 fixture list print
+* `pytest -s` : print all
 
 ### Pytest Decorators
 * `scope` 설정 : fixture가 실행되는 범위에 대해 정의합니다.  
@@ -52,3 +63,13 @@ addopts = --reuse-db
 ```
 
 
+
+### Ref
+* pytest
+  * 
+* pytest-django
+  * https://pytest-django.readthedocs.io/en/latest/index.html
+  * https://github.com/pytest-dev/pytest-django
+* 관련 
+  * https://velog.io/@sangyeon217/pytest-fixture
+  * https://towardsdatascience.com/make-your-python-tests-efficient-with-pytest-fixtures-3d7a1892265f

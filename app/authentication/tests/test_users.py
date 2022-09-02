@@ -16,9 +16,11 @@ def test_users_with_article_query(client: Client):
     # when
     users = User.objects.filter().all()
     yellow(users)
+    yellow("UsersCount:", users.count())
 
     articles = Article.objects.all()
     yellow(articles)
+    yellow("ArticleCount:", articles.count())
     # query = """
     #         {
     #           users(first:5)

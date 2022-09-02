@@ -14,8 +14,8 @@ from app.authentication.models import User
 def client() -> Generator[Client, Any, None]:
     """
     GraphQL Test Client
-    :return:
-    :rtype:
+    :return: Client
+    :rtype: Client
     """
     from django_graphql.schema import schema
     yield Client(schema)
@@ -36,9 +36,7 @@ def django_db_setup():
 @pytest.fixture(scope='function')
 def create_random_user():
     """
-    Create User with faker
-    :return:
-    :rtype:
+    Create Users with faker [scope=function]
     """
     fake = Faker()
     Faker.seed(0)
