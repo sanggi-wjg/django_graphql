@@ -69,6 +69,7 @@ def test_users_query(client: Client, create_random_user):
     # print(result)
 
 
+
 @pytest.mark.django_db
 def test_articles():
     green("=========[TEST_ARTICLES]=================")
