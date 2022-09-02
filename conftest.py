@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 from faker import Faker
 
@@ -8,13 +10,18 @@ from typing import Generator, Any
 from app.authentication.models import User
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def client() -> Generator[Client, Any, None]:
+    """
+    GraphQL Test Client
+    :return:
+    :rtype:
+    """
     from django_graphql.schema import schema
     yield Client(schema)
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='session', autouse=True)
 def django_db_setup():
     from django.conf import settings
     settings.DATABASE = {
@@ -26,12 +33,20 @@ def django_db_setup():
     }
 
 
-@pytest.fixture
-def create_basic_user():
+@pytest.fixture(scope='function')
+def create_random_user():
+    """
+    Create User with faker
+    :return:
+    :rtype:
+    """
     fake = Faker()
     Faker.seed(0)
 
-    for i in range(10, 15):
+    for _ in range(5):
         username = fake.name()
-        email = fake.email()
-        User.objects.create_user(username + f"-{i}", email + f"-{i}", username)
+        User.objects.create_user(
+            username + f"-{uuid.uuid4()}",
+            fake.email() + f"-{uuid.uuid4()}",
+            username
+        )

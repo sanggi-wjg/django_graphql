@@ -144,19 +144,19 @@ LOGGING = {
             'format': '%(asctime)s-%(module)s-%(levelname)s :: %(message)s'
         },
         'simple': {
-            'format': '%(levelname)s :: %(message)s'
+            'format': '%(message)s'
         }
     },
     'handlers': {
-        'console': {
+        'console_2': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+            'formatter': 'simple'
         },
     },
     'loggers': {
         'django.db.backends': {
-            'handlers': ['console'],
+            'handlers': ['console_2'],
             'propagate': False,
             'level': 'DEBUG'
         },

@@ -19,6 +19,7 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 
+from app.articles.views import ArticleView
 from django_graphql.schema import schema
 
 urlpatterns = [
@@ -27,4 +28,6 @@ urlpatterns = [
     path("graphql", csrf_exempt(
         GraphQLView.as_view(graphiql=settings.DEBUG, schema=schema)
     )),
+
+    path("articles", ArticleView.as_view())
 ]

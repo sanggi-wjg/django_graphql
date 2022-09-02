@@ -6,11 +6,11 @@ from graphene.test import Client
 
 from app.articles.models import Article
 from app.authentication.models import User
-from app.core.colorful import cyan
+from app.core.colorful import green
 
 
 @pytest.mark.django_db
-def test_users_query(client: Client, create_basic_user):
+def test_users_query(client: Client, create_random_user):
     # given
     fake = Faker()
     Faker.seed(0)
@@ -32,10 +32,10 @@ def test_users_query(client: Client, create_basic_user):
 
     # when
     users = User.objects.all()
-    cyan(users)
+    green(users)
 
     articles = Article.objects.all()
-    cyan(articles)
+    green(articles)
 
     # query = """
     #         {
