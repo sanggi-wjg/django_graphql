@@ -4,7 +4,8 @@
 ## Pros and Cons
 ### Pros
 * fixture를 통한 테스트 단위 관리
-* Test 실행시마다 Database DDL이 실행 될 필요가 없음
+* Test 실행시마다 Database DDL이 관련 SQL이 실행 될 필요가 없음
+  * 고정값으로 Master 데이터들은 미리 생성 해놓고 테스트도 가능
 * pytest 기반의 수많은 오픈 소스 
   * Multi-process Test 가능(pytest-xdist)
   * 프로파일링 (pytest-benchmark)  
@@ -99,6 +100,7 @@ def access_token_headers_admin(
 * `pytest app/authentication` `pytest app/authentication/tests/test_users.py` : 특정 폴더, 특정 파일 테스트   
 * `pytest --fixtures` : 적용된 fixture list print
 * `pytest -s` : print all
+* `pytest --benchmark-only` : benchmark test
 
 ![](images/930dad6c.png)
 
@@ -149,5 +151,4 @@ addopts = --reuse-db
   * https://pytest-django.readthedocs.io/en/latest/index.html
   * https://github.com/pytest-dev/pytest-django
 * 관련 
-  * https://velog.io/@sangyeon217/pytest-fixture
-  * https://towardsdatascience.com/make-your-python-tests-efficient-with-pytest-fixtures-3d7a1892265f
+  * 

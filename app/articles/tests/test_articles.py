@@ -10,7 +10,7 @@ from app.core.colorful import green
 
 
 @pytest.mark.django_db
-def test_users_query(client: Client, create_random_user):
+def test_users_query(client: Client, create_random_users):
     # given
     fake = Faker()
     Faker.seed(0)
