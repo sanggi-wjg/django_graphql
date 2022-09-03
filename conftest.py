@@ -2,27 +2,42 @@ import uuid
 
 import pytest
 from faker import Faker
+from rest_framework.test import APIClient
 
 from graphene.test import Client
 
 from typing import Generator, Any
 
 from app.authentication.models import User
+from test_fixtures import fixture_users
 
 
 @pytest.fixture(scope='function')
 def client() -> Generator[Client, Any, None]:
     """
     GraphQL Test Client
-    :return:
-    :rtype:
+    :return: Client
+    :rtype: Client
     """
     from django_graphql.schema import schema
     yield Client(schema)
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='function')
+def api_client() -> Generator[APIClient, Any, None]:
+    """
+    DRF API Client
+    :return APIClient
+    :rtype APIClient
+    """
+    yield APIClient()
+
+
+@pytest.fixture(scope='session')
 def django_db_setup():
+    """
+    Override dependency django_db_setup
+    """
     from django.conf import settings
     settings.DATABASE = {
         'default': {
@@ -34,19 +49,8 @@ def django_db_setup():
 
 
 @pytest.fixture(scope='function')
-def create_random_user():
+def create_random_users():
     """
-    Create User with faker
-    :return:
-    :rtype:
+    Create Users with faker
     """
-    fake = Faker()
-    Faker.seed(0)
-
-    for _ in range(5):
-        username = fake.name()
-        User.objects.create_user(
-            username + f"-{uuid.uuid4()}",
-            fake.email() + f"-{uuid.uuid4()}",
-            username
-        )
+    fixture_users.create_users()

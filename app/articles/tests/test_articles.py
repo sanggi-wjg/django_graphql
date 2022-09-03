@@ -10,7 +10,7 @@ from app.core.colorful import green
 
 
 @pytest.mark.django_db
-def test_users_query(client: Client, create_random_user):
+def test_users_query(client: Client, create_random_users):
     # given
     fake = Faker()
     Faker.seed(0)
@@ -33,9 +33,11 @@ def test_users_query(client: Client, create_random_user):
     # when
     users = User.objects.all()
     green(users)
+    green("UsersCount:", users.count())
 
     articles = Article.objects.all()
     green(articles)
+    green("ArticleCount:", articles.count())
 
     # query = """
     #         {
@@ -65,3 +67,17 @@ def test_users_query(client: Client, create_random_user):
     #         """
     # result = client.execute(query)
     # print(result)
+
+
+
+@pytest.mark.django_db
+def test_articles():
+    green("=========[TEST_ARTICLES]=================")
+    users = User.objects.all()
+    green(users)
+    green("UsersCount:", users.count())
+
+    articles = Article.objects.all()
+    green(articles)
+    green("ArticleCount:", articles.count())
+    green("============================================")

@@ -1,18 +1,109 @@
-## Test
+## pytest-django
+`pytest`를 기반을 한 Django 테스트를 위한 오픈 소스
 
-* https://velog.io/@sangyeon217/pytest-fixture
-* https://towardsdatascience.com/make-your-python-tests-efficient-with-pytest-fixtures-3d7a1892265f
+## Pros and Cons
+### Pros
+* fixture를 통한 테스트 단위 관리
+* Test 실행시마다 Database DDL이 관련 SQL이 실행 될 필요가 없음
+  * 고정값으로 Master 데이터들은 미리 생성 해놓고 테스트도 가능
+* pytest 기반의 수많은 오픈 소스 
+  * Multi-process Test 가능(pytest-xdist)
+  * 프로파일링 (pytest-benchmark)  
 
-### Command 
-* `pytest --fixtures` : 적용된 fixture list print  
+### Cons
+* Django TestCase, APITestCase에 비해 기본 사용을 위한 학습 필요
+* 적절한 오픈 소스를 선택하기 위한 시간 소모 
+* 테스트 관련 오픈 소스들 마다 추가적인 학습 필요
 
-
-### Run Test 
+## Install and Settings
+### 1. Install Package
+```python
+pip install pytest pytest-django
 ```
-pytest .
-pytest app/authentication
-pytest -s
+
+### 2. Create test config file `pytest.ini`
+```python
+[pytest]
+DJANGO_SETTINGS_MODULE = django_graphql.settings_test_only
+...
 ```
+
+### 3. Create `conftest.py`
+테스트에서 사용할 fixtures 선언 해놓은 코드
+* client, database, redis, token 등등등등 여러가지 다양하게 선언 가능
+
+```python
+from graphene.test import Client
+
+@pytest.fixture(scope='function')
+def client() -> Generator[Client, Any, None]:
+    """
+    GraphQL Test Client
+    :return: Client
+    :rtype: Client
+    """
+    from django_graphql.schema import schema
+    yield Client(schema)
+
+  @pytest.fixture(scope='function')
+def api_client() -> Generator[APIClient, Any, None]:
+    """
+    DRF API Client
+    :return APIClient
+    :rtype APIClient
+    """
+    yield APIClient()
+
+
+@pytest.fixture
+def test_db() -> Generator[Session, Any, None]:
+    connection = engine.connect()
+    transaction = connection.begin()
+    session = testingSessionLocal(bind=connection)
+    try:
+        yield session
+    finally:
+        transaction.rollback()
+        connection.close()
+
+@pytest.fixture
+def test_redis() -> Generator[Redis, Any, None]:
+    redis = fakeredis.FakeStrictRedis(server=fakeredis.FakeServer())
+    try:
+        yield redis
+    finally:
+        redis.close()
+
+@pytest.fixture
+def access_token_headers(
+        client: TestClient, 
+        test_db: Session
+) -> dict:
+    return get_access_token_for_normal_user(
+      client, test_db, e.test_user_email, e.test_user_password
+    )
+
+
+@pytest.fixture
+def access_token_headers_admin(
+        client: TestClient, 
+        test_db: Session
+) -> dict:
+    return get_access_token_for_admin_user(
+      client, test_db, e.test_user_email, e.test_user_password
+    )
+```
+
+
+## Run Pytest 
+* `pytest .`, `pytest`: 현재 폴더 이하 테스트
+* `pytest app/authentication` `pytest app/authentication/tests/test_users.py` : 특정 폴더, 특정 파일 테스트   
+* `pytest --fixtures` : 적용된 fixture list print
+* `pytest -s` : print all
+* `pytest --benchmark-only` : benchmark test
+
+![](images/930dad6c.png)
+
 
 ### Pytest Decorators
 * `scope` 설정 : fixture가 실행되는 범위에 대해 정의합니다.  
@@ -52,3 +143,12 @@ addopts = --reuse-db
 ```
 
 
+
+### Ref
+* pytest
+  * 
+* pytest-django
+  * https://pytest-django.readthedocs.io/en/latest/index.html
+  * https://github.com/pytest-dev/pytest-django
+* 관련 
+  * 
