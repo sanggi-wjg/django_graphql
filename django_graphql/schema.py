@@ -2,7 +2,7 @@ import graphene
 
 from app.articles.mutations import (
     UpdateArticleMutation, CreateArticleMutation, DeleteArticleMutation,
-    CreateCommentMutation
+    CreateCommentMutation, IsDuplicateEmailMutation
 )
 from app.articles.queries import (
     ArticleQuery,
@@ -25,6 +25,8 @@ class Mutation(graphene.ObjectType):
     delete_article = DeleteArticleMutation.Field()
 
     create_comment = CreateCommentMutation.Field()
+
+    is_duplicate_user_email = IsDuplicateEmailMutation.Field()
 
 
 schema = graphene.Schema(

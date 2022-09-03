@@ -1,19 +1,15 @@
-import uuid
-
-import pytest
-from faker import Faker
-from rest_framework.test import APIClient
-
-from graphene.test import Client
-
 from typing import Generator, Any
 
-from app.authentication.models import User
+import pytest
+from graphene.test import Client
+from graphene_django.utils.testing import graphql_query
+from rest_framework.test import APIClient
+
 from test_fixtures import fixture_users
 
 
 @pytest.fixture(scope='function')
-def client() -> Generator[Client, Any, None]:
+def query_client() -> Generator[Client, Any, None]:
     """
     GraphQL Test Client
     :return: Client
@@ -21,6 +17,14 @@ def client() -> Generator[Client, Any, None]:
     """
     from django_graphql.schema import schema
     yield Client(schema)
+
+
+@pytest.fixture
+def gql_query(client):
+    def func(*args, **kwargs):
+        return graphql_query(*args, **kwargs, client=client)
+
+    return func
 
 
 @pytest.fixture(scope='function')
