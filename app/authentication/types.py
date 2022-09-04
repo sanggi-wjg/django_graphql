@@ -1,5 +1,4 @@
 import graphene
-from django.db.models import Count
 from graphene import relay
 from graphene_django import DjangoObjectType
 from graphql import ResolveInfo
@@ -20,6 +19,15 @@ class UserType(DjangoObjectType):
             "email": ('exact', "contains"),
         }
         connection_class = PaginationConnection
+
+    # @classmethod
+    # def get_node(cls, info, id):
+    #     queryset = cls.Meta.model
+    #     print(queryset)
+    #     try:
+    #         return cls(queryset.objects.get(pk=id))
+    #     except queryset.DoesNotExist:
+    #         return None
 
     @classmethod
     def get_queryset(cls, queryset, info):

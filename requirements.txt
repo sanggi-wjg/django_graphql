@@ -8,6 +8,7 @@ colorful-print==0.0.6
 Django==3.1.5
 django-filter==2.3.0
 djangorestframework==3.13.1
+execnet==1.9.0
 Faker==14.1.0
 graphene==2.1.9
 graphene-django==2.15.0
@@ -20,9 +21,13 @@ pluggy==1.0.0
 promise==2.3
 psutil==5.9.1
 py==1.11.0
+py-cpuinfo==8.0.0
 pyparsing==3.0.9
 pytest==7.1.2
+pytest-benchmark==3.4.1
 pytest-django==4.5.2
+pytest-forked==1.4.0
+pytest-xdist==2.5.0
 python-dateutil==2.8.2
 pytz==2022.1
 Rx==1.6.1

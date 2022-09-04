@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from app.authentication.models import User
+from app.core.graphen_utils import get_gid_from_id
 
 
 class ArticleManager(models.Manager):
@@ -42,6 +43,10 @@ class Article(models.Model):
              update_fields=None):
         self.slug = slugify(self.title)
         super(Article, self).save(force_insert, force_update, using, update_fields)
+
+    @property
+    def gid(self):
+        return get_gid_from_id("ArticleType", self.id)
 
     @property
     def comment_count(self):

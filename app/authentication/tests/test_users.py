@@ -5,6 +5,7 @@ from django.urls import reverse
 from graphene.test import Client
 from memory_profiler import profile
 from rest_framework import status
+from pytest_django.asserts import assertNumQueries
 
 from rest_framework.test import APIClient
 from app.articles.models import Article
@@ -14,7 +15,7 @@ from app.core.colorful import yellow, cyan
 
 @pytest.mark.django_db
 def test_users_query(
-        client: Client,
+        query_client: Client,
         create_random_users
 ):
     # given
@@ -43,7 +44,7 @@ def test_users_query(
             }
             """
     # when
-    result = client.execute(query)
+    result = query_client.execute(query)
     # then
     pprint(result)
 
@@ -77,6 +78,42 @@ def test_users_queryset(
 
     user_count = using_count_query()
     user_count_2 = using_len_api()
+
+    with assertNumQueries(5):
+        for i in range(5):
+            user = users[i]
+
+    with assertNumQueries(1):
+        users = list(users)
+        for i in range(5):
+            user = users[i]
+
+
+@pytest.mark.django_db
+def test_is_duplicate_email_mutation(
+        gql_query,
+        query_client
+):
+    # given
+    User.objects.create_user("test@dev.com", "test.dev.com", "123")
+    query = """
+    mutation IsDuplicateUserEmail($input:IsDuplicateEmailInput!){
+      isDuplicateUserEmail(input:$input){
+        isDuplicate
+      }
+    }
+    """
+    data = {
+        "input": {
+            "email": "123"
+        }
+    }
+
+    # when
+    result = query_client.execute(query, variables=data)
+    # result = gql_query(query, input_data=vars)
+    # then
+    print(result)
 
 
 # given

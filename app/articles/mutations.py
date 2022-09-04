@@ -3,7 +3,6 @@ import graphene
 from app.articles.models import Article, Comment
 from app.articles.types import ArticleType, CommentType
 
-
 # class BaseMutation(graphene.Mutation):
 #     class Meta:
 #         abstract = True
@@ -13,6 +12,7 @@ from app.articles.types import ArticleType, CommentType
 #         print(root)
 #         print(info)
 #         print(data)
+from app.authentication.models import User
 
 
 class ArticleInputBase(graphene.InputObjectType):
@@ -74,6 +74,28 @@ class DeleteArticleMutation(graphene.Mutation):
 
         article.delete()
         return DeleteArticleMutation(is_success=True)
+
+
+class IsDuplicateEmailInput(graphene.InputObjectType):
+    email = graphene.String(required=True)
+
+
+class IsDuplicateEmailMutation(graphene.Mutation):
+    class Meta:
+        description = "이메일 중복 여부"
+
+    class Arguments:
+        input = IsDuplicateEmailInput(required=True)
+
+    is_duplicate = graphene.Boolean()
+
+    @classmethod
+    def mutate(cls, root, info, input: dict):
+        try:
+            User.objects.get(email=input.get('email'))
+            return cls(is_duplicate=True)
+        except User.DoesNotExist:
+            return cls(is_duplicate=False)
 
 
 class CommentInputBase(graphene.InputObjectType):

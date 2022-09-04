@@ -31,8 +31,12 @@ class ArticleType(DjangoObjectType):
         except queryset.DoesNotExist:
             return None
 
+    my_gid = graphene.String()
     comment_count = graphene.Int(description="글 댓글 개수")
     masking_creator_username = graphene.String(description="마스킹 된 유저 이름")
+
+    def resolve_my_gid(self: Article, info: ResolveInfo):
+        return self.gid
 
     # dataloader_user = graphene.Field(UserType)
 
