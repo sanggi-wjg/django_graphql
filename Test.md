@@ -1,19 +1,31 @@
-## pytest-django
-`pytest`를 기반을 한 Django 테스트를 위한 오픈 소스
+## pytest
+> The pytest framework makes it easy to write small, readable tests, and can scale to support complex functional testing for applications and libraries.
+
+* 업계 사용 비율 (stackshare)
+![](images/5b8335ff.png)
 
 ## Pros and Cons
 ### Pros
-* fixture를 통한 테스트 단위 관리
+* 간단하다면 간단하고 쉬운 코드 작성
+* fixture를 통한 단위, 인수 테스트 관리
 * Test 실행시마다 Database DDL이 관련 SQL이 실행 될 필요가 없음
   * 고정값으로 Master 데이터들은 미리 생성 해놓고 테스트도 가능
-* pytest 기반의 수많은 오픈 소스 
-  * Multi-process Test 가능(pytest-xdist)
-  * 프로파일링 (pytest-benchmark)  
+* pytest 기반의 수많은 오픈 소스
 
 ### Cons
 * Django TestCase, APITestCase에 비해 기본 사용을 위한 학습 필요
 * 적절한 오픈 소스를 선택하기 위한 시간 소모 
 * 테스트 관련 오픈 소스들 마다 추가적인 학습 필요
+
+### 기반 오픈소스 
+* pytest-django
+  * `pytest`를 기반을 한 Django 테스트 
+* pytest-xdist
+  * Multi-process Test 실행 
+* pytest-benchmark
+  * 벤치마크 프로파일링 기능
+  * memory_profile 같이 사용 가능
+* 
 
 ## Install and Settings
 ### 1. Install Package
@@ -22,6 +34,7 @@ pip install pytest pytest-django
 ```
 
 ### 2. Create test config file `pytest.ini`
+* pytest 설정 파일
 ```python
 [pytest]
 DJANGO_SETTINGS_MODULE = django_graphql.settings_test_only
@@ -29,8 +42,8 @@ DJANGO_SETTINGS_MODULE = django_graphql.settings_test_only
 ```
 
 ### 3. Create `conftest.py`
-테스트에서 사용할 fixtures 선언 해놓은 코드
-* client, database, redis, token 등등등등 여러가지 다양하게 선언 가능
+* 테스트에서 사용할 `fixtures` 선언 해놓은 코드
+* `client, database, redis, token, variable` 등등등등 여러가지 다양하게 선언 가능
 
 ```python
 from graphene.test import Client
@@ -98,11 +111,16 @@ def access_token_headers_admin(
 ## Run Pytest 
 * `pytest .`, `pytest`: 현재 폴더 이하 테스트
 * `pytest app/authentication` `pytest app/authentication/tests/test_users.py` : 특정 폴더, 특정 파일 테스트   
+* `pytest app/authentication/tests/test_users.py -k test_something` : 특정 파일내 특정 함수 테스트
+* 
 * `pytest --fixtures` : 적용된 fixture list print
-* `pytest -s` : print all
+* `pytest -s` : 
 * `pytest --benchmark-only` : benchmark test
 
 ![](images/930dad6c.png)
+
+* 기타 옵션 참고 
+  * https://docs.pytest.org/en/latest/reference/reference.html#configuration-options
 
 
 ### Pytest Decorators
