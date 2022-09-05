@@ -169,3 +169,10 @@ Line #    Mem usage    Increment  Occurrences   Line Contents
    126    243.0 MiB      0.0 MiB           1       del b
    127    243.0 MiB      0.0 MiB           1       return a
 ```
+
+# 기타
+* awesome pytest plugins
+  * https://opensource.com/article/18/6/pytest-plugins
+  * https://miguendes.me/7-pytest-plugins-you-must-definitely-use
+  * https://towardsdatascience.com/pytest-plugins-to-love-%EF%B8%8F-9c71635fbe22
+  * https://betterprogramming.pub/7-pytest-features-and-plugins-that-will-save-you-tons-of-time-74808b9d4756
