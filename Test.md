@@ -3,6 +3,9 @@
 * https://pytest-django.readthedocs.io/en/latest/
 > The pytest framework makes it easy to write small, readable tests, and can scale to support complex functional testing for applications and libraries.
 
+Python에서는 테스트를 위해서 `unittest`, `pytest`를 사용하는데,
+간단한 테스트 경우 `unittest`만으로도 충분 하지만 고도화된 나만의 test를 위해서는 `pytest`를 많이 사용합니다.
+
 * stack share
 ![](images/5b8335ff.png)
 
@@ -28,6 +31,8 @@
 * pytest-benchmark
   * 벤치마크 프로파일링 기능
   * memory_profile 같이 사용 가능
+* pytest-html
+  * 결과 html 생성 (coverage html과 같이 사용하면 좋음)
 * 등등 ...
 
 
@@ -150,6 +155,9 @@ def access_token_headers(
 ![](images/3b96df7f.png)
 * `pytest --benchmark-only` : benchmark test
 ![](images/0c292669.png)
+
+
+## 기타 Memory Profile
 ![](images/a89b8216.png)
 ```shell
 Line #    Mem usage    Increment  Occurrences   Line Contents
