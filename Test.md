@@ -36,12 +36,19 @@
 pip install pytest pytest-django
 ```
 
+### 프로젝트 처음 세팅에 해줘야 할 것 
+```shell
+# 테스트로 사용할 setting 
+python manage.py migrate --settings=django_graphql.settings_test_only
+```
+
 ### 2. Create test config file `pytest.ini`
 * pytest 설정 파일
 ```python
 [pytest]
 DJANGO_SETTINGS_MODULE = django_graphql.settings_test_only
 ...
+
 ```
 
 ### 3. Create `conftest.py`
