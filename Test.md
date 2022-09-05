@@ -1,46 +1,59 @@
-## pytest
-* https://docs.pytest.org/en/7.1.x/
-* https://pytest-django.readthedocs.io/en/latest/
-> The pytest framework makes it easy to write small, readable tests, and can scale to support complex functional testing for applications and libraries.
+## UnitTest에서 PyTest으로 변경
+Python 개발자들은 테스트를 진행하기 위해서 `unittest` 혹은 `pytest`를 사용 한다.
 
-Python에서는 테스트를 위해서 `unittest`, `pytest`를 사용하는데,
-간단한 테스트 경우 `unittest`만으로도 충분 하지만 고도화된 나만의 test를 위해서는 `pytest`를 많이 사용합니다.
+프로젝트를 처음 개발할 때와 간단한 테스트는 `unittest`만으로도 충분했지만   
+이후 시간이 지나 Test코드 작성을 위해 Test와 상관 없는 코드를 또 작성하고 또 작성하고 반복 하고
+Database DDL 또한 반복 실행되어 괜한 시간을 소요한다.
+
+`pytest`는 위에서 겪은 문제들에 대해서 해결을 할 수 있다.
+
+> The pytest framework makes it easy to write small, readable tests, 
+> and can scale to support complex functional testing for applications and libraries.
 
 * stack share
 ![](images/5b8335ff.png)
 
+## UnitTest의 문제점
+1. 무조건적인 `클래스 기반의 테스트`
+2. `전체 테스트`나 `함수 하나의 테스트`나 **전부 Database 재생성이 필요**
+
+
 ## Pros and Cons
 ### Pros
 * 간단하며 쉽게 코드 작성
-* fixture를 통한 단위, 인수 테스트 관리
-* Test 실행시마다 Database DDL이 관련 SQL이 실행 될 필요가 없음
-  * 고정값으로 Master 데이터들은 미리 테이블 값으로 생성 해놓고 테스트도 가능
-* pytest 기반의 수많은 오픈 소스
+* `fixture`를 통한 단위, 인수 테스트 관리
+* Test 실행시마다 Database `DDL SQL이 재실행 될 필요가 없음`
+  * **미리 생성된 데이터 베이스 사용 가능** 
+  * 고정값으로 **Master 데이터들은 미리 테이블 값으로 생성** 해놓고 테스트도 가능
+* pytest 기반 수많은 오픈 소스
 
 ### Cons
-* unittest에 비해 기본 사용을 위한 학습과 학습시간 필요
-* 적절한 pytest 기반의 오픈 소스를 선택하기 위한 시간 소모 
-* 테스트 관련 오픈 소스들 마다 추가적인 학습과 선택 필요
+* `unittest`에 비해 기본 사용을 위한 `학습시간 필요`
+  * 기존 Python 문법과는 다소 생소한 부분이 있음
+* 적절한 `pytest` 기반의 오픈 소스를 선택하기 위한 `시간 소모` 
+* `fixture`에 대해서 개발자들이 `전부 이해하고 숙지`하고 있어야 함
+  * `override 되는 부분` 혹은 `이미 생성된 fixture`가 있을 수 있음
+* pytest 관련 오픈 소스 추가할 때마다 `추가적인 학습과 선택을 위한 시간 필요`
 
 
 ### 기반 오픈소스  
-* pytest-django
+* `pytest-django`
   * `pytest`를 기반을 한 Django 테스트 
-* pytest-xdist
+* `pytest-xdist`
   * Multi-process Test 실행 
-* pytest-benchmark
+* `pytest-benchmark`
   * 벤치마크 프로파일링 기능
-  * memory_profile 같이 사용 가능
-* pytest-html
-  * 결과 html 생성 (coverage html과 같이 사용하면 좋음)
+  * `memory_profile` 같이 사용 가능
+* `pytest-html`
+  * 결과 html 생성 (`coverage`랑 같이 사용하면 좋을듯?)
 * 등등 ...
 
 
 ### Pytest Decorators
-* `scope` 설정 : fixture가 실행되는 범위에 대해 정의합니다.  
-  설정한 scope 단위로 fixture는 한 번만 생성되고 계속 재사용됩니다.
-* 총 5개의 scope이 있으며, 범위의 크기는 아래와 같습니다.   
-  function(default) < class < module < package < session
+* `scope` 설정 : `fixture`가 실행되는 범위에 대해 정의합니다.  
+  설정한 `scope` 단위로 `fixture`는 한 번만 생성되고 계속 재사용됩니다.
+* 총 5개의 `scope이` 있으며, 범위의 크기는 아래와 같습니다.   
+  `function(default) < class < module < package < session`
 
 ```python
 @pytest.fixture(scope="function") : fixture가 함수 단위로 1회 생성됨(디폴트 설정으로, @pytest.fixture 와 같습니다.)
@@ -170,8 +183,11 @@ Line #    Mem usage    Increment  Occurrences   Line Contents
    127    243.0 MiB      0.0 MiB           1       return a
 ```
 
-# 기타
-* awesome pytest plugins
+# Ref
+* Official Docs
+  * https://docs.pytest.org/en/7.1.x/
+  * https://pytest-django.readthedocs.io/en/latest/
+* Awesome pytest plugins...
   * https://opensource.com/article/18/6/pytest-plugins
   * https://miguendes.me/7-pytest-plugins-you-must-definitely-use
   * https://towardsdatascience.com/pytest-plugins-to-love-%EF%B8%8F-9c71635fbe22
