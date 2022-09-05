@@ -1,3 +1,4 @@
+import math
 from pprint import pprint
 
 import pytest
@@ -88,6 +89,8 @@ def test_users_queryset(
         for i in range(5):
             user = users[i]
 
+    something_func()
+
 
 @pytest.mark.django_db
 def test_is_duplicate_email_mutation(
@@ -114,6 +117,14 @@ def test_is_duplicate_email_mutation(
     # result = gql_query(query, input_data=vars)
     # then
     print(result)
+
+
+@profile
+def something_func():
+    a = [1] * (10 ** 6)
+    b = [2] * (2 * 10 ** 7)
+    del b
+    return a
 
 
 # given

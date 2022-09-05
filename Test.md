@@ -1,23 +1,26 @@
 ## pytest
+* https://docs.pytest.org/en/7.1.x/
+* https://pytest-django.readthedocs.io/en/latest/
 > The pytest framework makes it easy to write small, readable tests, and can scale to support complex functional testing for applications and libraries.
 
-* 업계 사용 비율 (stackshare)
+* stack share
 ![](images/5b8335ff.png)
 
 ## Pros and Cons
 ### Pros
-* 간단하다면 간단하고 쉬운 코드 작성
+* 간단하며 쉽게 코드 작성
 * fixture를 통한 단위, 인수 테스트 관리
 * Test 실행시마다 Database DDL이 관련 SQL이 실행 될 필요가 없음
-  * 고정값으로 Master 데이터들은 미리 생성 해놓고 테스트도 가능
+  * 고정값으로 Master 데이터들은 미리 테이블 값으로 생성 해놓고 테스트도 가능
 * pytest 기반의 수많은 오픈 소스
 
 ### Cons
-* Django TestCase, APITestCase에 비해 기본 사용을 위한 학습 필요
-* 적절한 오픈 소스를 선택하기 위한 시간 소모 
-* 테스트 관련 오픈 소스들 마다 추가적인 학습 필요
+* unittest에 비해 기본 사용을 위한 학습과 학습시간 필요
+* 적절한 pytest 기반의 오픈 소스를 선택하기 위한 시간 소모 
+* 테스트 관련 오픈 소스들 마다 추가적인 학습과 선택 필요
 
-### 기반 오픈소스 
+
+### 기반 오픈소스  
 * pytest-django
   * `pytest`를 기반을 한 Django 테스트 
 * pytest-xdist
@@ -25,7 +28,7 @@
 * pytest-benchmark
   * 벤치마크 프로파일링 기능
   * memory_profile 같이 사용 가능
-* 
+
 
 ## Install and Settings
 ### 1. Install Package
@@ -43,13 +46,11 @@ DJANGO_SETTINGS_MODULE = django_graphql.settings_test_only
 
 ### 3. Create `conftest.py`
 * 테스트에서 사용할 `fixtures` 선언 해놓은 코드
-* `client, database, redis, token, variable` 등등등등 여러가지 다양하게 선언 가능
+* `client, database, redis, token, data 생성` 등등등등 여러가지 다양하게 선언 가능
 
 ```python
-from graphene.test import Client
-
 @pytest.fixture(scope='function')
-def client() -> Generator[Client, Any, None]:
+def query_client() -> Generator[Client, Any, None]:
     """
     GraphQL Test Client
     :return: Client
@@ -58,7 +59,14 @@ def client() -> Generator[Client, Any, None]:
     from django_graphql.schema import schema
     yield Client(schema)
 
-  @pytest.fixture(scope='function')
+@pytest.fixture
+def gql_query(client):
+    def func(*args, **kwargs):
+        return graphql_query(*args, **kwargs, client=client)
+
+    return func
+
+@pytest.fixture(scope='function')
 def api_client() -> Generator[APIClient, Any, None]:
     """
     DRF API Client
@@ -66,27 +74,7 @@ def api_client() -> Generator[APIClient, Any, None]:
     :rtype APIClient
     """
     yield APIClient()
-
-
-@pytest.fixture
-def test_db() -> Generator[Session, Any, None]:
-    connection = engine.connect()
-    transaction = connection.begin()
-    session = testingSessionLocal(bind=connection)
-    try:
-        yield session
-    finally:
-        transaction.rollback()
-        connection.close()
-
-@pytest.fixture
-def test_redis() -> Generator[Redis, Any, None]:
-    redis = fakeredis.FakeStrictRedis(server=fakeredis.FakeServer())
-    try:
-        yield redis
-    finally:
-        redis.close()
-
+    
 @pytest.fixture
 def access_token_headers(
         client: TestClient, 
@@ -95,29 +83,33 @@ def access_token_headers(
     return get_access_token_for_normal_user(
       client, test_db, e.test_user_email, e.test_user_password
     )
-
-
-@pytest.fixture
-def access_token_headers_admin(
-        client: TestClient, 
-        test_db: Session
-) -> dict:
-    return get_access_token_for_admin_user(
-      client, test_db, e.test_user_email, e.test_user_password
-    )
 ```
 
 
-## Run Pytest 
+## Run Pytest
+![](images/930dad6c.png)
+![](images/92dbdb9f.png)
+
 * `pytest .`, `pytest`: 현재 폴더 이하 테스트
 * `pytest app/authentication` `pytest app/authentication/tests/test_users.py` : 특정 폴더, 특정 파일 테스트   
 * `pytest app/authentication/tests/test_users.py -k test_something` : 특정 파일내 특정 함수 테스트
-* 
+* `pytest -s` : Capture 표준 출력  
 * `pytest --fixtures` : 적용된 fixture list print
-* `pytest -s` : 
+![](images/3b96df7f.png)
 * `pytest --benchmark-only` : benchmark test
+![](images/0c292669.png)
+![](images/a89b8216.png)
+```shell
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   122     82.8 MiB     82.8 MiB           1   @profile
+   123                                         def something_calc_func():
+   124     90.4 MiB      7.6 MiB           1       a = [1] * (10 ** 6)
+   125    243.0 MiB    152.6 MiB           1       b = [2] * (2 * 10 ** 7)
+   126    243.0 MiB      0.0 MiB           1       del b
+   127    243.0 MiB      0.0 MiB           1       return a
+```
 
-![](images/930dad6c.png)
 
 * 기타 옵션 참고 
   * https://docs.pytest.org/en/latest/reference/reference.html#configuration-options
@@ -152,6 +144,7 @@ def access_token_headers_admin(
 
 
 ### `pytest.ini` options
+* https://pytest-django.readthedocs.io/en/latest/configuring_django.html
 ```shell
 ; true, keep
 django_debug_mode = true
@@ -162,11 +155,5 @@ addopts = --reuse-db
 
 
 
-### Ref
-* pytest
-  * 
-* pytest-django
-  * https://pytest-django.readthedocs.io/en/latest/index.html
-  * https://github.com/pytest-dev/pytest-django
-* 관련 
-  * 
+### 관련 Ref
+* 
