@@ -1,14 +1,13 @@
-import math
 from pprint import pprint
 
 import pytest
 from django.urls import reverse
 from graphene.test import Client
 from memory_profiler import profile
-from rest_framework import status
 from pytest_django.asserts import assertNumQueries
-
+from rest_framework import status
 from rest_framework.test import APIClient
+
 from app.articles.models import Article
 from app.authentication.models import User
 from app.core.colorful import yellow, cyan

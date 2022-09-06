@@ -69,7 +69,6 @@ def test_users_query(query_client: Client, create_random_users):
     # print(result)
 
 
-
 @pytest.mark.django_db
 def test_articles():
     green("=========[TEST_ARTICLES]=================")
@@ -81,3 +80,25 @@ def test_articles():
     green(articles)
     green("ArticleCount:", articles.count())
     green("============================================")
+
+
+def test_health_check_success_case():
+    from app.articles.services import health_check_naver
+
+    is_healthy = health_check_naver()
+    assert is_healthy
+
+
+def test_health_check_fail_404_case(mocker):
+    from rest_framework import status
+    from app.articles.services import health_check_naver
+
+    mocker.patch(
+        'app.articles.services.request_naver',
+        return_value={
+            'status_code': status.HTTP_404_NOT_FOUND,
+            'detail': "success",
+        }
+    )
+    is_healthy = health_check_naver()
+    assert not is_healthy

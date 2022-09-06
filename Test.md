@@ -1,3 +1,8 @@
+* https://github.com/KimSoungRyoul/python_mocking_study_project/blob/master/tests/test_mocking_requests.py
+* https://techblog.yogiyo.co.kr/%EB%8B%B9%EC%8B%A0%EC%9D%98-%EA%B0%9D%EC%B2%B4-mock%EC%9C%BC%EB%A1%9C-%EB%8C%80%EC%B2%B4%EB%90%98%EC%97%88%EB%8B%A4-98da3f8cba5b
+* https://kibua20.tistory.com/227
+* https://medium.com/oheadline/%EC%98%A4%EB%8A%98%EC%9D%98-%ED%97%A4%EB%93%9C%EB%9D%BC%EC%9D%B8-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1%EA%B8%B0-2-mock-45ca0f239b08
+
 ## UnitTest에서 PyTest으로 변경
 Python 개발자들은 테스트를 진행하기 위해서 `unittest` 혹은 `pytest`를 사용 한다.
 
@@ -16,6 +21,9 @@ Database DDL 또한 반복 실행되어 괜한 시간을 소요한다.
 ## UnitTest의 문제점
 1. 무조건적인 `클래스 기반의 테스트`
 2. `전체 테스트`나 `함수 하나의 테스트`나 **전부 Database 재생성이 필요**
+3. 테스트 케이스가 늘어남에 따라서 중복 소스가 많아 지고 관리가 어려운 부분이 생김,   
+내가 개발을 위해서 테스트 코드를 작성하는지 테스트를 할려고 개발을 하는지...
+
 
 
 ## Pros and Cons
