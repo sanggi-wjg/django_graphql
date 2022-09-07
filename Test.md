@@ -325,8 +325,37 @@ class TestCaseUsers:
 ![](images/39775d40.png)
 
 
-## 기타 Memory Profile
-![](images/a89b8216.png)
+## 테스트 코드를 실행해보면서 Profile 하기
+* memory_profile
+* line_profiler_decorator
+```shell
+Filename: /Users/raynor/workspace/django_graphql/app/authentication/tests/test_users.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   136    104.8 MiB    104.8 MiB           1   @profile
+   137                                         def something_func():
+   138    112.5 MiB      7.6 MiB           1       a = [1] * (10 ** 6)
+   139    265.1 MiB    152.6 MiB           1       b = [2] * (2 * 10 ** 7)
+   140    265.1 MiB      0.0 MiB           1       del b
+   141    265.1 MiB      0.0 MiB           1       return a
+
+
+Timer unit: 1e-06 s
+
+Total time: 0.056724 s
+File: /Users/raynor/workspace/django_graphql/app/authentication/tests/test_users.py
+Function: something_func_line_profile at line 143
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   143                                           @profiler
+   144                                           def something_func_line_profile():
+   145         1        659.0    659.0      1.2      a = [1] * (10 ** 6)
+   146         1      12799.0  12799.0     22.6      b = [2] * (2 * 10 ** 7)
+   147         1      43264.0  43264.0     76.3      del b
+   148         1          2.0      2.0      0.0      return a
+```
 
 
 

@@ -3,6 +3,7 @@ from pprint import pprint
 import pytest
 from django.urls import reverse
 from graphene.test import Client
+from line_profiler_decorator import profiler
 from memory_profiler import profile
 from pytest_django.asserts import assertNumQueries
 from rest_framework import status
@@ -99,6 +100,7 @@ def test_users_queryset(
             user = users[i]
 
     something_func()
+    something_func_line_profile()
 
 
 @pytest.mark.django_db
@@ -137,6 +139,14 @@ def something_func():
     b = [2] * (2 * 10 ** 7)
     del b
     return a
+
+@profiler
+def something_func_line_profile():
+    a = [1] * (10 ** 6)
+    b = [2] * (2 * 10 ** 7)
+    del b
+    return a
+
 
 
 # given
