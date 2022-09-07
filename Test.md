@@ -1,22 +1,19 @@
-* https://github.com/KimSoungRyoul/python_mocking_study_project/blob/master/tests/test_mocking_requests.py
-* https://techblog.yogiyo.co.kr/%EB%8B%B9%EC%8B%A0%EC%9D%98-%EA%B0%9D%EC%B2%B4-mock%EC%9C%BC%EB%A1%9C-%EB%8C%80%EC%B2%B4%EB%90%98%EC%97%88%EB%8B%A4-98da3f8cba5b
-* https://kibua20.tistory.com/227
-* https://medium.com/oheadline/%EC%98%A4%EB%8A%98%EC%9D%98-%ED%97%A4%EB%93%9C%EB%9D%BC%EC%9D%B8-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1%EA%B8%B0-2-mock-45ca0f239b08
+# PyTest
+Python 개발자들은 테스트를 진행하기 위해서 `unittest` 혹은 `pytest`를 가장 많이 사용 한다.
+`unittest`는 기본 모듈로 이미 같이 설치되고 `pytest`는 개별 설치가 필요하다.
 
-## UnitTest에서 PyTest으로 변경
-Python 개발자들은 테스트를 진행하기 위해서 `unittest` 혹은 `pytest`를 사용 한다.
-
-프로젝트를 처음 개발할 때와 간단한 테스트는 `unittest`만으로도 충분했지만   
-이후 시간이 지나 Test코드 작성을 위해 Test와 상관 없는 코드를 또 작성하고 또 작성하고 반복 하고
-Database DDL 또한 반복 실행되어 괜한 시간을 소요한다.
+프로젝트를 처음 개발할 때 혹은 간단한 테스트 진행을 할 때는 `unittest`로도 충분했지만   
+이후 시간이 지나 Test 작성을 위해 Test와 상관 없는 코드를 또 작성하고 또 작성하고 반복 하고
+또한 Database DDL 반복 실행되어 괜한 시간을 소요한다.
 
 `pytest`는 위에서 겪은 문제들에 대해서 해결을 할 수 있다.
-
 > The pytest framework makes it easy to write small, readable tests, 
 > and can scale to support complex functional testing for applications and libraries.
 
-* stack share
+### Stack Share
+StackShare에서 확인해보면 `unittest` 보다는 `pytest`를 업계에서 더 선호하고 있다. 
 ![](images/5b8335ff.png)
+
 
 ## UnitTest의 문제점
 1. 무조건적인 `클래스 기반의 테스트`
@@ -25,17 +22,16 @@ Database DDL 또한 반복 실행되어 괜한 시간을 소요한다.
 내가 개발을 위해서 테스트 코드를 작성하는지 테스트를 할려고 개발을 하는지...
 
 
-
-## Pros and Cons
-### Pros
+## 장점과 단점
+### 장점
 * 간단하며 쉽게 코드 작성
-* `fixture`를 통한 단위, 인수 테스트 관리
+* `fixture`를 통한 기능 단위, 인수 관리 용이
 * Test 실행시마다 Database `DDL SQL이 재실행 될 필요가 없음`
   * **미리 생성된 데이터 베이스 사용 가능** 
-  * 고정값으로 **Master 데이터들은 미리 테이블 값으로 생성** 해놓고 테스트도 가능
-* pytest 기반 수많은 오픈 소스
+  * 팀에서 명시적 고정값으로 **Master 데이터들은 미리 테이블 값으로 생성** 해놓고 테스트도 가능
+* pytest 기반의 많은 오픈 소스
 
-### Cons
+### 단점
 * `unittest`에 비해 기본 사용을 위한 `학습시간 필요`
   * 기존 Python 문법과는 다소 생소한 부분이 있음
 * 적절한 `pytest` 기반의 오픈 소스를 선택하기 위한 `시간 소모` 
@@ -44,7 +40,7 @@ Database DDL 또한 반복 실행되어 괜한 시간을 소요한다.
 * pytest 관련 오픈 소스 추가할 때마다 `추가적인 학습과 선택을 위한 시간 필요`
 
 
-### 기반 오픈소스  
+### Pytest 기반 오픈 소스  
 * `pytest-django`
   * `pytest`를 기반을 한 Django 테스트 
 * `pytest-xdist`
@@ -57,7 +53,7 @@ Database DDL 또한 반복 실행되어 괜한 시간을 소요한다.
 * 등등 ...
 
 
-### Pytest Decorators
+### Pytest Fixture Decorator
 * `scope` 설정 : `fixture`가 실행되는 범위에 대해 정의합니다.  
   설정한 `scope` 단위로 `fixture`는 한 번만 생성되고 계속 재사용됩니다.
 * 총 5개의 `scope이` 있으며, 범위의 크기는 아래와 같습니다.   
@@ -70,7 +66,6 @@ Database DDL 또한 반복 실행되어 괜한 시간을 소요한다.
 @pytest.fixture(scope="package") : fixture가 패키지 단위로 1회 생성됨
 @pytest.fixture(scope="session") : fixture가 test session동안 1회 생성됨
 ```
-
 
 * `skip` : Skip 기능 
 ```python
@@ -87,27 +82,18 @@ def test_something_when_skip():
 ```
 
 
-### `pytest.ini` options
-* 기타 옵션 참고 
-  * https://docs.pytest.org/en/latest/reference/reference.html#configuration-options
-  * https://pytest-django.readthedocs.io/en/latest/configuring_django.html
-```shell
-; true, keep
-django_debug_mode = true
-
-; --reuse-db : 재사용 --create-db : 생성
-addopts = --reuse-db 
-```
 
 
 
-## Install and Settings
+## 설치 및 세팅
 ### 1. Install Package
 ```python
-pip install pytest pytest-django
+pip install pytest
+
+pip install [pytest plugins]
 ```
 
-### 프로젝트 처음 세팅에 해줘야 할 것 
+### 만약 테스트에서 DB를 재사용 한다고 하면, 프로젝트 처음 세팅에 해줘야 할 것 
 ```shell
 # 테스트로 사용할 setting 
 python manage.py migrate --settings=django_graphql.settings_test_only
@@ -115,16 +101,30 @@ python manage.py migrate --settings=django_graphql.settings_test_only
 
 ### 2. Create test config file `pytest.ini`
 * pytest 설정 파일
+* 옵션 참고  
+  * https://docs.pytest.org/en/latest/reference/reference.html#configuration-options
+  * https://pytest-django.readthedocs.io/en/latest/configuring_django.html
 ```python
 [pytest]
 DJANGO_SETTINGS_MODULE = django_graphql.settings_test_only
-...
+FAIL_INVALID_TEMPLATE_VARS = True
 
+python_files = test_*.py
+django_debug_mode = true
+addopts = --reuse-db
+
+testpaths =
+    app/core
+    app/authentication
+    app/articles
+...
 ```
 
-### 3. Create `conftest.py`
-* 테스트에서 사용할 `fixtures` 선언 해놓은 코드
-* `client, database, redis, token, data 생성` 등등등등 여러가지 다양하게 선언 가능
+# Test Code 작성 방법
+
+## `conftest.py` 생성
+* 테스트에서 사용할 `fixture`들을 선언 해놓는 파일
+* `client, database, redis, token, data(var, dict, ...), ... 등 생성` 여러가지 다양하게 선언 가능
 
 ```python
 @pytest.fixture(scope='function')
@@ -163,11 +163,96 @@ def access_token_headers(
     )
 ```
 
+## Function 작성 방법
+
+### 1. Setup, Teardown Function
+```python
+def setup_function(function):
+    red("SETUP FUNCTION")
+
+def teardown_function(function):
+    red("TEAR DOWN FUNCTION")
+```
+
+### 2. Test Function 작성
+```python
+@pytest.mark.django_db
+def test_users_api_client(
+        api_client: APIClient, # fixture 선언
+        create_random_users
+):
+    # when
+    response = api_client.get(reverse('users-list'))
+    # then
+    assert response.status_code == status.HTTP_200_OK
+    for r in response.json():
+        cyan(r)
+
+        
+        
+@pytest.mark.django_db
+def test_users_queryset(
+        create_random_users  # fixture 선언
+):
+    # given
+    # when
+    users = User.objects.all()
+    yellow(users)
+    yellow("UsersCount:", users.count())
+
+    articles = Article.objects.all()
+    yellow(articles)
+    yellow("ArticleCount:", articles.count())
+
+    user_count = using_count_query()
+    user_count_2 = using_len_api()
+
+    with assertNumQueries(5):
+        for i in range(5):
+            user = users[i]
+
+    with assertNumQueries(1):
+        users = list(users)
+        for i in range(5):
+            user = users[i]
+```
+
+
+## Class 작성 방법
+```python
+@pytest.mark.django_db
+class TestCaseUsers:
+    pytestmark = pytest.mark.django_db
+
+    @classmethod
+    def setup_class(cls):
+        red("SETUP CLASS")
+
+    @classmethod
+    def teardown_class(cls):
+        red("TEAR DOWN CLASS")
+
+    def setup_method(self, method):
+        yellow("\nSETUP METHOD")
+        User.objects.create_user("test@dev.com", "test@dev.com", "123")
+
+    def teardown_method(self, method):
+        yellow("TEAR DOWN METHOD\n")
+
+    def test_0001(self):
+        users = User.objects.all()
+        print(users)
+
+    def test_0002(self, create_random_users):
+        users = User.objects.all()
+        print(users)
+
+    def test_0003(self):
+        users = User.objects.all()
+        print(users)
+```
 
 ## Run Pytest
-![](images/94019417.png)
-![](images/92dbdb9f.png)
-
 * `pytest .`, `pytest`: 현재 폴더 이하 테스트
 * `pytest app/authentication` `pytest app/authentication/tests/test_users.py` : 특정 폴더, 특정 파일 테스트   
 * `pytest app/authentication/tests/test_users.py -k test_something` : 특정 파일내 특정 함수 테스트
@@ -177,26 +262,22 @@ def access_token_headers(
 * `pytest --benchmark-only` : benchmark test
 ![](images/0c292669.png)
 
+![](images/94019417.png)
+![](images/92dbdb9f.png)
 
 ## 기타 Memory Profile
 ![](images/a89b8216.png)
-```shell
-Line #    Mem usage    Increment  Occurrences   Line Contents
-=============================================================
-   122     82.8 MiB     82.8 MiB           1   @profile
-   123                                         def something_calc_func():
-   124     90.4 MiB      7.6 MiB           1       a = [1] * (10 ** 6)
-   125    243.0 MiB    152.6 MiB           1       b = [2] * (2 * 10 ** 7)
-   126    243.0 MiB      0.0 MiB           1       del b
-   127    243.0 MiB      0.0 MiB           1       return a
-```
+
 
 # Ref
 * Official Docs
   * https://docs.pytest.org/en/7.1.x/
   * https://pytest-django.readthedocs.io/en/latest/
-* Awesome pytest plugins...
+* Awesome pytest plugins
   * https://opensource.com/article/18/6/pytest-plugins
   * https://miguendes.me/7-pytest-plugins-you-must-definitely-use
   * https://towardsdatascience.com/pytest-plugins-to-love-%EF%B8%8F-9c71635fbe22
   * https://betterprogramming.pub/7-pytest-features-and-plugins-that-will-save-you-tons-of-time-74808b9d4756
+* 보면 좋을지도...?
+  * https://github.com/KimSoungRyoul/python_mocking_study_project/blob/master/tests/test_mocking_requests.py
+  * https://medium.com/oheadline/%EC%98%A4%EB%8A%98%EC%9D%98-%ED%97%A4%EB%93%9C%EB%9D%BC%EC%9D%B8-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1%EA%B8%B0-2-mock-45ca0f239b08

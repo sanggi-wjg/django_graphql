@@ -10,7 +10,15 @@ from rest_framework.test import APIClient
 
 from app.articles.models import Article
 from app.authentication.models import User
-from app.core.colorful import yellow, cyan
+from app.core.colorful import yellow, cyan, red, green
+
+
+def setup_function(function):
+    red("SETUP FUNCTION")
+
+
+def teardown_function(function):
+    red("TEAR DOWN FUNCTION")
 
 
 @pytest.mark.django_db
@@ -46,7 +54,7 @@ def test_users_query(
     # when
     result = query_client.execute(query)
     # then
-    pprint(result)
+    green(result)
 
 
 @pytest.mark.django_db
@@ -115,7 +123,7 @@ def test_is_duplicate_email_mutation(
     result = query_client.execute(query, variables=data)
     # result = gql_query(query, input_data=vars)
     # then
-    print(result)
+    green(result)
 
 
 @profile
@@ -127,12 +135,12 @@ def something_func():
 
 
 # given
-@profile
+# @profile
 def using_count_query():
     return User.objects.all().count()
 
 
-@profile
+# @profile
 def using_len_api():
     return len(User.objects.all())
 
