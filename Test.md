@@ -358,6 +358,45 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    148         1          2.0      2.0      0.0      return a
 ```
 
+### Retry Decorator
+```python
+import functools
+import requests
+
+
+def retry(exceptions: tuple, retry_count: int = 3):
+    def decorator(func):
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for i in range(retry_count):
+                try:
+                    return func(*args, **kwargs)
+
+                except exceptions as e:
+                    print("Error occurred. But retry!!!\n")
+
+                except Exception as e:
+                    print(e)
+                    raise e
+
+        return wrapper
+
+    return decorator
+
+
+@retry(
+    exceptions=(requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.ConnectTimeout)
+)
+def something_func():
+    print("[PRE] Something_func")
+    # resp =  reuqests.get("something.host.com")
+    raise requests.exceptions.ConnectTimeout("timeout error")
+    print("[POST] Something_func")
+
+
+something_func()
+```
 
 
 # Ref
