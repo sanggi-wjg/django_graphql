@@ -367,16 +367,27 @@ flake8
 
 ## Coverage
 ```shell
-pip install coverage
+# Install package
+pip install pytest pytest-cov coverage coverage-badge
 
-# 실행
-coverage run -m pytest
+# pytest
+pytest .
 
-# report 출력
+# coverage
+coverage run -m pytest app/tests/ 
+
+# pytest coverage
+pytest --cov-report term-missing --cov=. app/tests/
+
+# 통계
 coverage report
-
-# report html 생성
+# Html 로
 coverage html
+# 이전 기록 삭제
+coverage erase
+
+# Create coverage badge
+coverage-badge -o coverage.svg
 ```
 
 
