@@ -24,7 +24,7 @@ def teardown_function(function):
 @pytest.mark.django_db
 def test_users_query(
         query_client: Client,
-        create_random_users
+        # create_random_users
 ):
     # given
     query = """

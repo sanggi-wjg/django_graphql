@@ -83,8 +83,6 @@ def test_something_when_skip():
 
 
 
-
-
 ## 설치 및 세팅
 ### 1. Install Package
 ```python
@@ -174,6 +172,7 @@ def teardown_function(function):
     red("TEAR DOWN FUNCTION")
 ```
 
+
 ### 2. Test Function 작성
 ```python
 @pytest.mark.django_db
@@ -218,6 +217,66 @@ def test_users_queryset(
 ```
 
 
+### Benchmark 작성
+```python
+def using_count_query():
+    return User.objects.all().count()
+
+
+# @profile
+def using_len_api():
+    return len(User.objects.all())
+
+
+@pytest.mark.django_db
+def test_using_count_query(
+        create_random_users,
+        benchmark
+):
+    # when
+    benchmark(using_count_query)
+    # then
+    assert True
+
+
+@pytest.mark.django_db
+def test_using_len_api(
+        create_random_users,
+        benchmark
+):
+    # when
+    benchmark(using_len_api)
+    # then
+    assert True
+```
+![](images/0c292669.png)
+
+
+### Mock 작성
+```python
+def test_health_check_success_case():
+    from app.articles.services import health_check_naver
+
+    is_healthy = health_check_naver()
+    assert is_healthy
+
+
+def test_health_check_fail_404_case(mocker):
+    from rest_framework import status
+    from app.articles.services import health_check_naver
+
+    mocker.patch(
+        'app.articles.services.request_naver',
+        return_value={
+            'status_code': status.HTTP_404_NOT_FOUND,
+            'detail': "not found",
+        }
+    )
+    is_healthy = health_check_naver()
+    assert not is_healthy
+```
+
+
 ## Class 작성 방법
 ```python
 @pytest.mark.django_db
@@ -252,6 +311,7 @@ class TestCaseUsers:
         print(users)
 ```
 
+
 ## Run Pytest
 * `pytest .`, `pytest`: 현재 폴더 이하 테스트
 * `pytest app/authentication` `pytest app/authentication/tests/test_users.py` : 특정 폴더, 특정 파일 테스트   
@@ -260,13 +320,14 @@ class TestCaseUsers:
 * `pytest --fixtures` : 적용된 fixture list print
 ![](images/3b96df7f.png)
 * `pytest --benchmark-only` : benchmark test
-![](images/0c292669.png)
 
 ![](images/94019417.png)
-![](images/92dbdb9f.png)
+![](images/39775d40.png)
+
 
 ## 기타 Memory Profile
 ![](images/a89b8216.png)
+
 
 
 # Ref

@@ -10,7 +10,10 @@ from app.core.colorful import green
 
 
 @pytest.mark.django_db
-def test_users_query(query_client: Client, create_random_users):
+def test_something_anything_query(
+        query_client: Client,
+        create_random_users
+):
     # given
     fake = Faker()
     Faker.seed(0)
@@ -70,7 +73,9 @@ def test_users_query(query_client: Client, create_random_users):
 
 
 @pytest.mark.django_db
-def test_articles():
+def test_articles(
+        create_random_articles_with_random_users
+):
     green("=========[TEST_ARTICLES]=================")
     users = User.objects.all()
     green(users)
@@ -97,7 +102,7 @@ def test_health_check_fail_404_case(mocker):
         'app.articles.services.request_naver',
         return_value={
             'status_code': status.HTTP_404_NOT_FOUND,
-            'detail': "success",
+            'detail': "not found",
         }
     )
     is_healthy = health_check_naver()
