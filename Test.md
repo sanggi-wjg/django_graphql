@@ -177,13 +177,13 @@ def teardown_function(function):
 ```python
 @pytest.mark.django_db
 def test_users_api_client(
-        api_client: APIClient, # fixture 선언
+        api_client: APIClient,
         create_random_users
 ):
     # when
     response = api_client.get(reverse('users-list'))
     # then
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_200_OK, "200 성공이여야 한다."
     for r in response.json():
         cyan(r)
 
@@ -258,7 +258,7 @@ def test_health_check_success_case():
     from app.articles.services import health_check_naver
 
     is_healthy = health_check_naver()
-    assert is_healthy
+    assert is_healthy, "Naver Request 실패"
 
 
 def test_health_check_fail_404_case(mocker):
@@ -273,7 +273,7 @@ def test_health_check_fail_404_case(mocker):
         }
     )
     is_healthy = health_check_naver()
-    assert not is_healthy
+    assert not is_healthy, "Naver Request는 404 에러가 발생해야 한다."
 ```
 
 

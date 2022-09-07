@@ -62,5 +62,9 @@ def create_random_users():
 
 @pytest.fixture(scope='function')
 def create_random_articles_with_random_users():
+    """
+    Create Users with faker
+    Create Articles with fake users
+    """
     users = fixture_users.create_users()
     fixture_users.create_articles(users)

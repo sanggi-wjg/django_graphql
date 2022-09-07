@@ -24,7 +24,7 @@ def teardown_function(function):
 @pytest.mark.django_db
 def test_users_query(
         query_client: Client,
-        # create_random_users
+        create_random_users
 ):
     # given
     query = """
@@ -54,7 +54,8 @@ def test_users_query(
     # when
     result = query_client.execute(query)
     # then
-    green(result)
+    print()
+    pprint(result)
 
 
 @pytest.mark.django_db
@@ -65,14 +66,15 @@ def test_users_api_client(
     # when
     response = api_client.get(reverse('users-list'))
     # then
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_200_OK, "200 성공이여야 한다."
     for r in response.json():
         cyan(r)
 
 
 @pytest.mark.django_db
 def test_users_queryset(
-        create_random_users
+        create_random_users,
+        create_random_articles_with_random_users
 ):
     # given
     # when
@@ -101,7 +103,6 @@ def test_users_queryset(
 
 @pytest.mark.django_db
 def test_is_duplicate_email_mutation(
-        gql_query,
         query_client
 ):
     # given
@@ -118,12 +119,16 @@ def test_is_duplicate_email_mutation(
             "email": "123"
         }
     }
-
     # when
     result = query_client.execute(query, variables=data)
-    # result = gql_query(query, input_data=vars)
-    # then
     green(result)
+
+    # then
+    assert result.get('data'), "Success Case 이므로 성공적으로 data를 가져와야 한다."
+    assert not result.get('errors'), "Success Case 이므로 errors 는 발생하지 않아야 한다."
+
+    data = result.get('data').popitem()
+    assert not data[1].get('is_duplicate'), "유저 생겅 Validate 규칙을 통해 중복은 발생해야 하지 않는다."
 
 
 @profile

@@ -91,7 +91,7 @@ def test_health_check_success_case():
     from app.articles.services import health_check_naver
 
     is_healthy = health_check_naver()
-    assert is_healthy
+    assert is_healthy, "Naver Request 실패"
 
 
 def test_health_check_fail_404_case(mocker):
@@ -106,4 +106,4 @@ def test_health_check_fail_404_case(mocker):
         }
     )
     is_healthy = health_check_naver()
-    assert not is_healthy
+    assert not is_healthy, "Naver Request는 404 에러가 발생해야 한다."
