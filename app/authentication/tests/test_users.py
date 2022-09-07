@@ -14,18 +14,27 @@ from app.authentication.models import User
 from app.core.colorful import yellow, cyan, red, green
 
 
+def setup_module(module):
+    red("SETUP MODULE")
+
+
+def teardown_module(module):
+    red("TEAR DOWN MODULE")
+
+
 def setup_function(function):
-    red("SETUP FUNCTION")
+    yellow("SETUP FUNCTION")
 
 
 def teardown_function(function):
-    red("TEAR DOWN FUNCTION")
+    yellow("TEAR DOWN FUNCTION")
 
 
 @pytest.mark.django_db
 def test_users_query(
         query_client: Client,
-        create_random_users
+        create_random_users,
+        create_superuser
 ):
     # given
     query = """
@@ -140,13 +149,13 @@ def something_func():
     del b
     return a
 
+
 @profiler
 def something_func_line_profile():
     a = [1] * (10 ** 6)
     b = [2] * (2 * 10 ** 7)
     del b
     return a
-
 
 
 # given

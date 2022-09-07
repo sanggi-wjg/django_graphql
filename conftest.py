@@ -5,10 +5,11 @@ from graphene.test import Client
 from graphene_django.utils.testing import graphql_query
 from rest_framework.test import APIClient
 
+from app.authentication.models import User
 from test_fixtures import fixture_users
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def query_client() -> Generator[Client, Any, None]:
     """
     GraphQL Test Client
@@ -19,7 +20,7 @@ def query_client() -> Generator[Client, Any, None]:
     yield Client(schema)
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def gql_query(client):
     def func(*args, **kwargs):
         return graphql_query(*args, **kwargs, client=client)
@@ -27,7 +28,7 @@ def gql_query(client):
     return func
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def api_client() -> Generator[APIClient, Any, None]:
     """
     DRF API Client
@@ -50,6 +51,15 @@ def django_db_setup():
             # 'NAME': ':memory',
         }
     }
+
+
+@pytest.fixture
+def create_superuser():
+    User.objects.create_superuser(
+        "raynor@dev.com",
+        "raynor@dev.com",
+        "passw0rd"
+    )
 
 
 @pytest.fixture(scope='function')

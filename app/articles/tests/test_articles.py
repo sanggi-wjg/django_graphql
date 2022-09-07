@@ -23,20 +23,24 @@ def test_something_anything_query(
         email = fake.email()
         User.objects.create_user(username + f"-{i}", email + f"-{i}", username)
 
-    users = User.objects.filter().all()
-    users = list(users)
-
-    for _ in range(5):
-        Article.objects.create_article(
-            title=fake.paragraph(nb_sentences=1),
-            content=fake.paragraph(nb_sentences=3),
-            creator_id=users[random.randint(0, len(users) - 1)].id
-        )
-
-    # when
     users = User.objects.all()
+    users_size = users.count()
+    users = list(users)
     green(users)
-    green("UsersCount:", users.count())
+    green("UsersCount:", users_size)
+
+    Article.objects.bulk_create(
+        [
+            Article(
+                title=fake.paragraph(nb_sentences=1),
+                content=fake.paragraph(nb_sentences=3),
+                creator=users[random.randint(0, users_size - 1)]
+            )
+            for _ in range(10)
+        ],
+        batch_size=1000,
+        ignore_conflicts=True
+    )
 
     articles = Article.objects.all()
     green(articles)
