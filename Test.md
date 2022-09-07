@@ -420,8 +420,10 @@ def retry(exceptions: tuple, retry_count: int = 3):
 
 @retry(
     exceptions=(requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.ConnectTimeout)
+    # retry_status_code = (500, 501, 502)
 )
 def something_func():
+    
     print("[PRE] Something_func")
     # resp =  reuqests.get("something.host.com")
     raise requests.exceptions.ConnectTimeout("timeout error")
