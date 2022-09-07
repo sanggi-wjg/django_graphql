@@ -358,6 +358,28 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
    148         1          2.0      2.0      0.0      return a
 ```
 
+## Lint
+```shell
+pip install flake8
+
+flake8
+```
+
+## Coverage
+```shell
+pip install coverage
+
+# 실행
+coverage run -m pytest
+
+# report 출력
+coverage report
+
+# report html 생성
+coverage html
+```
+
+
 ### Retry Decorator
 ```python
 import functools
