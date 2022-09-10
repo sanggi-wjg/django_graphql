@@ -2,6 +2,7 @@ import logging
 
 from celery import shared_task
 
+from app.articles.models import Article
 from app.authentication.models import User
 
 
@@ -10,7 +11,14 @@ def something_batch():
     users = User.objects.all()
 
     for user in users:
-        logging.info(f"Email : {user.email} name : {user.username}")
+        text = f"Email : {user.email} name : {user.username}"
+        print(text)
+        logging.info(text)
 
 
-something_batch.delay()
+@shared_task
+def search_articles_like_chars():
+    articles = Article.objects.filter(title__contains="ab").all()
+    print("Article Count : ", articles.count())
+
+# something_batch.delay()
