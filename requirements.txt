@@ -44,7 +44,7 @@ iniconfig==1.1.1
 ipython==8.5.0
 jedi==0.18.1
 kombu==5.2.4
-line-profiler==3.3.0
+line-profiler==3.5.1
 line-profiler-decorator==0.0.5
 matplotlib-inline==0.1.6
 mccabe==0.7.0

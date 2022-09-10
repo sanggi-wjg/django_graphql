@@ -21,7 +21,7 @@ app.conf.beat_schedule = {
     },
     'search_articles_like_chars': {
         'task': 'app.authentication.tasks.search_articles_like_chars',
-        'schedule': crontab(minute="*/1"),
+        'schedule': crontab(hour="*/1"),
         'args': (),
         'options': {}
     }
