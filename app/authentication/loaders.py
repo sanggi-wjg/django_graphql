@@ -2,7 +2,7 @@ from promise import Promise
 from promise.dataloader import DataLoader
 
 from app.authentication.models import User
-from app.core.colorful import cyan, yellow
+from app.core.colorful import cyan
 
 
 class UserLoader(DataLoader):

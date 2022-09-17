@@ -1,14 +1,13 @@
 from collections import defaultdict
 from typing import List
 
-from django.db.models import Count
+# from django.db.models import Count
 from graphene_django import DjangoObjectType
 from promise import Promise
 from promise.dataloader import DataLoader
 
 from app.articles.models import Article
 from app.authentication.models import User
-from app.core.colorful import cyan
 
 
 class ArticleLoader(DataLoader):

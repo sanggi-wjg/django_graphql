@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def get_article_count(self):
-        return self.articles.distinct().count()
+        return self.articles.count()
 
     @property
     def get_articles_queryset(self):

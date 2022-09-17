@@ -1,5 +1,3 @@
-from django.contrib.auth.base_user import AbstractBaseUser
-
 from django.db import models
 from django.utils.text import slugify
 
@@ -55,7 +53,7 @@ class Article(models.Model):
     @property
     def masking_creator_username(self):
         if hasattr(self, 'creator'):
-            return f"".join([
+            return "".join([
                 name if i % 2 == 0 else '*'
                 for i, name in enumerate(list(self.creator.username))
             ])

@@ -2,7 +2,7 @@ import logging
 
 import celery
 from celery import shared_task
-from celery.utils.log import get_task_logger
+# from celery.utils.log import get_task_logger
 
 from app.articles.models import Article
 from app.authentication.models import User

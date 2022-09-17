@@ -1,6 +1,4 @@
 import requests
-from requests import Response
-from rest_framework import status
 
 
 def request_naver() -> dict:

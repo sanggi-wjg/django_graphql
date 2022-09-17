@@ -1,5 +1,4 @@
 import graphene
-from graphene import relay
 from graphene_django.debug import DjangoDebug
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import ResolveInfo

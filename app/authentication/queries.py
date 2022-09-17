@@ -2,7 +2,6 @@ import graphene
 from graphene_django.debug import DjangoDebug
 from graphene_django.filter import DjangoFilterConnectionField
 from graphql import ResolveInfo
-from graphql_relay import from_global_id, to_global_id
 
 from app.authentication.models import User
 from app.authentication.types import UserType

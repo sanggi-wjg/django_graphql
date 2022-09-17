@@ -79,5 +79,5 @@ def create_random_articles_with_random_users():
     users = fixture_users.create_users()
     fixture_users.create_articles(users)
 
-def kakao_sender():
-    yield FakeKakaoSender()
+# def kakao_sender():
+#     yield FakeKakaoSender()

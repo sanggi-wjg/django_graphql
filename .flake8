@@ -1,6 +1,7 @@
 [flake8]
 exclude =
     venv/,
+    venv_2/,
     .git,
     .gitignore,
     *.pot,
