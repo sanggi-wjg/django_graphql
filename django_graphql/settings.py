@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "app.core",
     "app.authentication",
     "app.articles",
+    "app.printers",
 ]
 
 MIDDLEWARE = [
