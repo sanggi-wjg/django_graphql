@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.test import TestCase
 
-from app.stocks.models import Stock, calc_something
+from app.stocks.models import Stock, calc_something, Category, CategoryNameChoices
 
 
 class StockTestCase(TestCase):
@@ -37,3 +37,39 @@ class StockTestCase(TestCase):
         for stock in stocks:
             print(stock.pay_price_2)
             print(stock.pay_price_2)
+
+    def test_case_0002(self):
+        # Constraint 사용
+        # category1 = Category.objects.create(category_name="1111")
+
+        # Normal case
+        Category.objects.create(category_name=CategoryNameChoices.COSMETIC)
+        Category.objects.create(category_name=CategoryNameChoices.COSMETIC)
+        Category.objects.create(category_name=CategoryNameChoices.FOOD)
+        Category.objects.create(category_name=CategoryNameChoices.BOOK)
+        Category.objects.create(category_name=CategoryNameChoices.FOOD)
+
+        # full_clean 사용
+        # category = Category(category_name="2222")
+        # category.full_clean()
+        # category.save()
+
+        categories = Category.objects.all()
+        for c in categories:
+            print(c)
+
+    def test_case_0003(self):
+        # given
+        # when
+        Category.objects.create(something_price=Decimal("0"))
+        Category.objects.create(something_price=Decimal("0.0"))
+        Category.objects.create(something_price=Decimal("0.00"))
+        Category.objects.create(something_price=Decimal("1"))
+        Category.objects.create(something_price=Decimal("1.1"))
+        Category.objects.create(something_price=Decimal("1.2"))
+        Category.objects.create(something_price=Decimal("10"))
+        Category.objects.create(something_price=Decimal("-1"))
+        # then
+        categories = Category.objects.all()
+        for c in categories:
+            print(c)
