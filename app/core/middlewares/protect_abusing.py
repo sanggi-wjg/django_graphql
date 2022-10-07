@@ -15,6 +15,7 @@ NOT_ALLOWED_ABUSING_OPERATION_NAMES = (
 class ProtectAbusingMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
+        # TODO 특정 request 요청만을 목적으로 block 처리 한다고 하면 middleware보다는 decorator로 감싸주는게 좋아봄임
         full_path = request.get_full_path()
 
         if request.method == "POST":
@@ -31,7 +32,7 @@ class SomethingProtector:
 
     def protect(self):
         if self.get_bit_by_user_id() == 1:
-            raise Exception(f"@@ ERROR : protect_abusing. rest_time : {self.get_ttl_by_user_id()}")
+            raise Exception(f"@@ Protect an abusing request. (Time of rest : {self.get_ttl_by_user_id()})")
         else:
             self.set_bit_by_user_id()
 
