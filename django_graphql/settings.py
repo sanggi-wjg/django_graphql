@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app.core.middlewares.protect_abusing.ProtectAbusingMiddleware',
 ]
 
 ROOT_URLCONF = 'django_graphql.urls'
@@ -105,7 +106,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://15.164.50.32:6379/1",
+        "LOCATION": "redis://15.164.50.32:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",

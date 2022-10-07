@@ -28,21 +28,21 @@
 #         return next(root, info, **args).catch(self.on_error)
 #
 #
-from app.articles import loaders
-from app.articles.types import UserType, ArticleType
-
-
-class Loaders:
-
-    def __init__(self):
-        self.user_by_article = loaders.generate_loader(UserType, "id")
-        self.articles_by_user_loader = loaders.generate_loader_by_foreign_key(ArticleType, 'creator_id')
-
-
-class LoaderMiddleware:
-
-    def resolve(self, next, root, info, **kwargs):
-        if not hasattr(info.context, 'loaders'):
-            info.context.loaders = Loaders()
-
-        return next(root, info, **kwargs)
+# from app.articles import loaders
+# from app.articles.types import UserType, ArticleType
+#
+#
+# class Loaders:
+#
+#     def __init__(self):
+#         self.user_by_article = loaders.generate_loader(UserType, "id")
+#         self.articles_by_user_loader = loaders.generate_loader_by_foreign_key(ArticleType, 'creator_id')
+#
+#
+# class LoaderMiddleware:
+#
+#     def resolve(self, next, root, info, **kwargs):
+#         if not hasattr(info.context, 'loaders'):
+#             info.context.loaders = Loaders()
+#
+#         return next(root, info, **kwargs)
