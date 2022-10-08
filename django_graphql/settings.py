@@ -10,15 +10,23 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import logging
+import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+import environ
+
+BASE_DIR = Path(__file__).resolve().parent.parent  # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+env = environ.Env(DEBUG=(bool, True))
+environ.Env.read_env(
+    env_file=os.path.join(BASE_DIR, '.env')
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = 'django-insecure-#yt7=1$x(%-s8m#bc89!r#ehum$ug92%z+f0h%5h&321wuis4!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -41,12 +49,14 @@ INSTALLED_APPS = [
     "django_filters",
     "django_celery_beat",
     "django_celery_results",
+    'storages',
 
     "app.core",
     "app.authentication",
     "app.articles",
     "app.printers",
     "app.stocks",
+    'app.aws',
 ]
 
 MIDDLEWARE = [
@@ -201,3 +211,16 @@ LOGGING = {
         },
     }
 }
+
+################################################
+# AWS
+################################################
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+
+################################################
+# S3
+################################################
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+AWS_STORAGE_BUCKET_NAME = 'bucket-sanggi-image'

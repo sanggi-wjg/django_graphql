@@ -21,6 +21,7 @@ from graphene_django.views import GraphQLView
 
 from app.articles.views import ArticleView
 from app.authentication.views import UserAPIView
+from app.aws.views import S3StorageView
 from django_graphql.schema import schema
 
 urlpatterns = [
@@ -32,4 +33,6 @@ urlpatterns = [
 
     path("articles", ArticleView.as_view(), name='articles-list'),
     path("users", UserAPIView.as_view(), name='users-list'),
+
+    path("aws/s3", S3StorageView.as_view(), name='aws-s3'),
 ]
