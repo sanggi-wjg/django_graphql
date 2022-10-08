@@ -2,14 +2,17 @@ from django.core.cache import caches
 from django.utils.deprecation import MiddlewareMixin
 from redis.client import Redis
 
-redis: Redis = caches['default'].client.get_client()
 NOT_ALLOWED_ABUSING_PATHS = (
-    '/graphql', '/users'
+    '/graphql',
+    '/users'
 )
 
 NOT_ALLOWED_ABUSING_OPERATION_NAMES = (
-    'create_order'
+    'create_order',
+    'something_mutation'
 )
+
+redis: Redis = caches['default'].client.get_client()
 
 
 class ProtectAbusingMiddleware(MiddlewareMixin):
@@ -20,28 +23,37 @@ class ProtectAbusingMiddleware(MiddlewareMixin):
 
         if request.method == "POST":
             if full_path in NOT_ALLOWED_ABUSING_PATHS:
-                something_redis = SomethingProtector(user_id=10)
-                something_redis.protect()
+                protector = SomethingProtector(user_id=10)
+                protector.protect()
 
 
 class SomethingProtector:
 
     def __init__(self, user_id: int = 10):
-        self.something_key = f"create-order:user:{user_id}"
+        # TODO 휘발성 정보지만 사용자 정보를 저장하고 따로 로그나 sentry나 등등 사용하고 싶다면 user_id만 저장하는 것 보다는
+        # hash로 유저 객체정보를 저장하는 것도 좋아보임
+        self.protect_redis_key = f"order:user:start-ordering:{user_id}"
         self.user_id = user_id
 
     def protect(self):
-        if self.get_bit_by_user_id() == 1:
-            raise Exception(f"@@ Protect an abusing request. (Time of rest : {self.get_ttl_by_user_id()})")
+        if MyLovelyRedisRepo.get_bit_by_key_and_offset(self.protect_redis_key) == 1:
+            raise Exception(
+                f"@@ Protect an abusing request. (Time of rest : {MyLovelyRedisRepo.get_ttl_by_key(self.protect_redis_key)})")
         else:
-            self.set_bit_by_user_id()
+            MyLovelyRedisRepo.set_bit_by_key_and_offset(self.protect_redis_key)
 
-    def get_ttl_by_user_id(self) -> int:
-        return redis.ttl(self.something_key)
 
-    def get_bit_by_user_id(self) -> int:
-        return redis.getbit(self.something_key, 0)
+class MyLovelyRedisRepo:
 
-    def set_bit_by_user_id(self, expire_second: int = 10) -> bool:
-        redis.setbit(self.something_key, 0, 1)
-        return redis.expire(self.something_key, expire_second)
+    @classmethod
+    def get_ttl_by_key(cls, key: str) -> int:
+        return redis.ttl(key)
+
+    @classmethod
+    def get_bit_by_key_and_offset(cls, key: str, offset: int = 0) -> int:
+        return redis.getbit(key, offset)
+
+    @classmethod
+    def set_bit_by_key_and_offset(cls, key: str, offset: int = 0, expire_second: int = 10) -> bool:
+        redis.setbit(key, offset, 1)
+        return redis.expire(key, expire_second)
