@@ -37,14 +37,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
 
-    @property
-    def get_article_count(self):
-        return self.articles.count()
-
-    @property
-    def get_articles_queryset(self):
-        return self.articles.get_queryset()
-
     class Meta:
         db_table = 'auth_user'
         verbose_name = 'auth_user'
+
+    def get_article_count(self):
+        return self.articles.count()
+
+    def get_articles_queryset(self):
+        return self.articles.get_queryset()
