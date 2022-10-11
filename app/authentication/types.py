@@ -35,7 +35,7 @@ class UserType(DjangoObjectType):
     article_count = graphene.Int(description="유저 글 개수")
 
     def resolve_article_count(self: User, info: ResolveInfo):
-        return self.articles.count()
+        return info.context.article_count_by_user_id_loader.load(self.id)
 
     articles = graphene.List(ArticleType)
 

@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+from django.db.models import Count
 from promise import Promise
 from promise.dataloader import DataLoader
 
@@ -7,15 +8,36 @@ from app.articles.models import Article
 
 
 class ArticlesByUserIdLoader(DataLoader):
-    # https://apirobot.me/posts/django-graphql-solving-n-1-problem-using-dataloaders
+
     def batch_load_fn(self, user_ids):
-        articles = defaultdict(list)
+        article_by_user_id = defaultdict(list)
 
         for article in Article.objects.filter(creator_id__in=user_ids).iterator():
-            articles[article.creator_id].append(article)
+            article_by_user_id[article.creator_id].append(article)
 
         return Promise.resolve([
-            articles.get(user_id, []) for user_id in user_ids
+            article_by_user_id.get(user_id, []) for user_id in user_ids
+        ])
+
+
+class ArticleCountByUserIdLoader(DataLoader):
+
+    def batch_load_fn(self, user_ids):
+        article_count_by_user_id = defaultdict(int)
+        article_counts = Article.objects.values('creator_id').filter(creator_id__in=user_ids).annotate(count=Count('creator_id'))
+
+        def get_article_count(user_id: int) -> int:
+            # TODO refactoring
+            for article_count in article_counts:
+                if article_count['creator_id'] == user_id:
+                    return article_count['count']
+            return 0
+
+        for user_id in user_ids:
+            article_count_by_user_id[user_id] = get_article_count(user_id)
+
+        return Promise.resolve([
+            article_count_by_user_id.get(user_id, []) for user_id in user_ids
         ])
 
 # class ArticleLoader(DataLoader):

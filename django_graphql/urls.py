@@ -21,7 +21,7 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 
-from app.articles.loaders import ArticlesByUserIdLoader
+from app.articles.loaders import ArticlesByUserIdLoader, ArticleCountByUserIdLoader
 from app.articles.views import ArticleView
 from app.authentication.views import UserAPIView
 from app.aws.views import S3StorageView
@@ -39,6 +39,10 @@ class GQLContext:
     @cached_property
     def articles_by_user_id_loader(self):
         return ArticlesByUserIdLoader()
+
+    @cached_property
+    def article_count_by_user_id_loader(self):
+        return ArticleCountByUserIdLoader()
 
 
 class CustomGraphQLView(GraphQLView):
