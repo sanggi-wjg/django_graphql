@@ -1,6 +1,6 @@
 import graphene
 from graphene import relay
-from graphene_django import DjangoObjectType
+from graphene_django import DjangoObjectType, DjangoConnectionField
 from graphql import ResolveInfo
 
 from app.articles.types import ArticleType
@@ -27,7 +27,6 @@ class UserType(DjangoObjectType):
     #         return cls(queryset.objects.get(pk=id))
     #     except queryset.DoesNotExist:
     #         return None
-
     # @classmethod
     # def get_queryset(cls, queryset, info):
     #     return queryset.prefetch_related('articles').all()
@@ -35,9 +34,10 @@ class UserType(DjangoObjectType):
     article_count = graphene.Int(description="유저 글 개수")
 
     def resolve_article_count(self: User, info: ResolveInfo):
-        return info.context.article_count_by_user_id_loader.load(self.id)
+        return info.context.loaders.article_count_by_user_id.load(self.id)
 
-    articles = graphene.List(ArticleType)
+    articles = DjangoConnectionField(ArticleType)
 
+    @staticmethod
     def resolve_articles(self: User, info: ResolveInfo):
-        return info.context.articles_by_user_id_loader.load(self.id)
+        return info.context.loaders.articles_by_user_id.load(self.id)
