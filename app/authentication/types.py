@@ -47,8 +47,8 @@ class UserType(DjangoObjectType):
     def resolve_article_count(self: User, info: ResolveInfo):
         return info.context.loaders.article_count_by_user_id.load(self.id)
 
-    d_articles = DjangoConnectionField(ArticleType, description="유저의 글")
-    # d_articles = DjangoFilterConnectionField(ArticleType, description="유저의 글")
+    # d_articles = DjangoConnectionField(ArticleType, description="유저의 글")
+    d_articles = DjangoFilterConnectionField(ArticleType, description="유저의 글")
     # d_articles = PromiseDjangoFilterConnectionField(ArticleType, description="유저의 글")
 
     def resolve_d_articles(self: User, info: ResolveInfo, *args, **kwargs):
