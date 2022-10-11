@@ -13,7 +13,8 @@ class ArticleFilter(django_filters.FilterSet):
         # ordering = ('-datetime_created', '-datetime_updated')
 
     slug = django_filters.CharFilter(lookup_expr='exact')
-    title = django_filters.CharFilter(lookup_expr='contains')
+    title = django_filters.CharFilter(lookup_expr='exact')
+    title_contains = django_filters.CharFilter(lookup_expr='contains')
     content = django_filters.CharFilter(lookup_expr='contains')
     creator = django_filters.ModelChoiceFilter(queryset=User.objects.filter(is_active=True).all())
     creator__username = django_filters.CharFilter(lookup_expr='exact')

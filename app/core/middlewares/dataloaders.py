@@ -7,6 +7,11 @@ from promise.dataloader import DataLoader
 
 from app.articles.models import Article
 
+"""
+https://jerrynsh.com/solving-n-1-in-graphql-python-with-dataloader/
+https://gist.github.com/ngshiheng/35b5f067350e17e568c9dfbc011e8d8b
+"""
+
 
 # def generate_loader(Type: DjangoObjectType, attr: str):
 #
@@ -37,7 +42,7 @@ from app.articles.models import Article
 #     return Loader
 
 
-def generate_loader_by_foreign_key(model_type: DjangoObjectType, attr: str):
+def generate_loader_by_foreign_key(model_type: DjangoObjectType, field: str):
     class Loader(DataLoader):
         """
         Example case of query One Reporter to Many Articles
@@ -45,13 +50,13 @@ def generate_loader_by_foreign_key(model_type: DjangoObjectType, attr: str):
 
         def batch_load_fn(self, keys: list) -> Promise:
             results_by_ids = defaultdict(list)
-            lookup = {f'{attr}__in': keys}
+            lookup = {f'{field}__in': keys}
 
             # For example: Article.objects.filter(reporter_id__in=[1, 2, 3,...)
             for result in model_type._meta.model.objects.filter(**lookup).iterator():
-                results_by_ids[getattr(result, attr)].append(result)
+                results_by_ids[getattr(result, field)].append(result)
 
-            return Promise.resolve([results_by_ids.get(id, []) for id in keys])
+            return Promise.resolve([results_by_ids.get(key, []) for key in keys])
 
     return Loader
 
@@ -72,23 +77,23 @@ class ArticlesByUserIdLoader(DataLoader):
 class ArticleCountByUserIdLoader(DataLoader):
 
     def batch_load_fn(self, user_ids):
-        article_count_by_user_id = defaultdict(int)
         article_counts = Article.objects.values('creator_id').filter(
             creator_id__in=user_ids
         ).annotate(count=Count('creator_id'))
 
-        def get_article_count(user_id: int) -> int:
-            # TODO refactoring
-            for article_count in article_counts:
-                if article_count['creator_id'] == user_id:
-                    return article_count['count']
+        # TODO refactoring
+        def get_article_count(creator_id: int) -> int:
+            for count in article_counts:
+                if count['creator_id'] == creator_id:
+                    return count['count']
             return 0
 
+        article_count_by_user_id = defaultdict(int)
         for user_id in user_ids:
             article_count_by_user_id[user_id] = get_article_count(user_id)
 
         return Promise.resolve([
-            article_count_by_user_id.get(user_id, []) for user_id in user_ids
+            article_count_by_user_id.get(user_id, 0) for user_id in user_ids
         ])
 
 
