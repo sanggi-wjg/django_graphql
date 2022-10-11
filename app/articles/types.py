@@ -15,21 +15,21 @@ class ArticleType(DjangoObjectType):
         interfaces = (relay.Node,)
         connection_class = PaginationConnection
 
-    @classmethod
-    def get_queryset(cls, queryset, info):
-        return queryset.select_related(
-            'creator'
-        ).prefetch_related(
-            'comments', 'comments__creator',
-        ).all()
-
-    @classmethod
-    def get_node(cls, info, id):
-        queryset = cls.Meta.model.objects
-        try:
-            return queryset.get(pk=id)
-        except queryset.DoesNotExist:
-            return None
+    # @classmethod
+    # def get_queryset(cls, queryset, info):
+    #     return queryset.select_related(
+    #         'creator'
+    #     ).prefetch_related(
+    #         'comments', 'comments__creator',
+    #     ).all()
+    #
+    # @classmethod
+    # def get_node(cls, info, id):
+    #     queryset = cls.Meta.model.objects
+    #     try:
+    #         return queryset.get(pk=id)
+    #     except queryset.DoesNotExist:
+    #         return None
 
     my_gid = graphene.String()
     comment_count = graphene.Int(description="글 댓글 개수")

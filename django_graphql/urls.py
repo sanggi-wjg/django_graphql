@@ -21,10 +21,10 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 
-from app.articles.loaders import ArticlesByUserIdLoader, ArticleCountByUserIdLoader
 from app.articles.views import ArticleView
 from app.authentication.views import UserAPIView
 from app.aws.views import S3StorageView
+from app.core.dataloaders import ArticlesByUserIdLoader, ArticleCountByUserIdLoader
 from django_graphql.schema import schema
 
 
