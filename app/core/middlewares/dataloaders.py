@@ -5,6 +5,7 @@ from graphene_django import DjangoObjectType
 from promise import Promise
 from promise.dataloader import DataLoader
 
+from app.articles.filters import ArticleFilter
 from app.articles.models import Article
 
 """
@@ -61,12 +62,23 @@ def generate_loader_by_foreign_key(model_type: DjangoObjectType, field: str):
     return Loader
 
 
-class ArticlesByUserIdLoader(DataLoader):
+class DataLoaderBase(DataLoader):
+
+    def __init__(
+            self, batch_load_fn=None, batch=None, max_batch_size=None, cache=None, get_cache_key=None,
+            cache_map=None, scheduler=None, **kwargs):
+        super().__init__(batch_load_fn, batch, max_batch_size, cache, get_cache_key, cache_map, scheduler)
+        self.kwargs = kwargs
+
+
+class ArticlesByUserIdLoader(DataLoaderBase):
 
     def batch_load_fn(self, user_ids):
         article_by_user_id = defaultdict(list)
 
-        for article in Article.objects.filter(creator_id__in=user_ids).iterator():
+        qs = ArticleFilter(self.kwargs, Article.objects.filter(creator_id__in=user_ids)).qs
+        for article in qs.iterator():
+            # for article in Article.objects.filter(creator_id__in=user_ids).iterator():
             article_by_user_id[article.creator_id].append(article)
 
         return Promise.resolve([
@@ -74,7 +86,7 @@ class ArticlesByUserIdLoader(DataLoader):
         ])
 
 
-class ArticleCountByUserIdLoader(DataLoader):
+class ArticleCountByUserIdLoader(DataLoaderBase):
 
     def batch_load_fn(self, user_ids):
         article_counts = Article.objects.values('creator_id').filter(
@@ -101,8 +113,8 @@ class DataLoaders:
 
     def __init__(self):
         # self.articles_by_user_id = generate_loader_by_foreign_key(ArticleType, 'creator_id')
-        self.articles_by_user_id = ArticlesByUserIdLoader()
-        self.article_count_by_user_id = ArticleCountByUserIdLoader()
+        self.articles_by_user_id = ArticlesByUserIdLoader
+        self.article_count_by_user_id = ArticleCountByUserIdLoader
 
 
 class DataLoaderMiddleware:

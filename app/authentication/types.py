@@ -15,12 +15,8 @@ from app.core.base_connections import PaginationConnection
 class PromiseDjangoFilterConnectionField(DjangoFilterConnectionField):
 
     @classmethod
-    def resolve_queryset(
-            cls, connection, iterable, info, args, filtering_args, filterset_class
-    ):
-        qs = super(DjangoFilterConnectionField, cls).resolve_queryset(
-            connection, iterable, info, args
-        )
+    def resolve_queryset(cls, connection, iterable, info, args, filtering_args, filterset_class):
+        qs = super(DjangoFilterConnectionField, cls).resolve_queryset(connection, iterable, info, args)
 
         filter_kwargs = {k: v for k, v in args.items() if k in filtering_args}
         on_resolve = partial(filterset_class, data=filter_kwargs, request=info.context)
@@ -47,10 +43,20 @@ class UserType(DjangoObjectType):
     def resolve_article_count(self: User, info: ResolveInfo):
         return info.context.loaders.article_count_by_user_id.load(self.id)
 
-    # d_articles = DjangoConnectionField(ArticleType, description="유저의 글")
-    d_articles = DjangoFilterConnectionField(ArticleType, description="유저의 글")
+    d_articles = DjangoConnectionField(ArticleType, title=graphene.String(), description="유저의 글")
+    # d_articles = DjangoFilterConnectionField(ArticleType, description="유저의 글")
     # d_articles = PromiseDjangoFilterConnectionField(ArticleType, description="유저의 글")
 
     def resolve_d_articles(self: User, info: ResolveInfo, *args, **kwargs):
-        # self.articles.filter()
-        return info.context.loaders.articles_by_user_id.load(self.id)
+        return info.context.loaders.articles_by_user_id(**kwargs).load(self.id)
+        # article_ids = ArticleFilter(
+        #     kwargs, Article.objects.filter(creator_id=self.id).all()
+        # ).qs.values_list('id', flat=True)
+
+        # return info.context.loaders.articles_by_user_id.load(self.id).then(get_sorter(article_ids))
+
+# def get_sorter(ids):
+#     def order_by(items):
+#         return [{item.id: item for item in items}[id] for id in ids]
+#
+#     return order_by

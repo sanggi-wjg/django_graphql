@@ -46,8 +46,8 @@ class CustomFilterSet(CustomBaseFilterSet, metaclass=FilterSetMetaclass):
     pass
 
 
-# class ArticleFilter(django_filters.FilterSet):
-class ArticleFilter(CustomFilterSet):
+# class ArticleFilter(CustomFilterSet):
+class ArticleFilter(django_filters.FilterSet):
     class Meta:
         model = Article
         fields = (
