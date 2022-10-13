@@ -5,12 +5,12 @@ from graphene_django import DjangoObjectType
 from promise import Promise
 from promise.dataloader import DataLoader
 
-from app.articles.filters import ArticleFilter
 from app.articles.models import Article
 
 """
 https://jerrynsh.com/solving-n-1-in-graphql-python-with-dataloader/
 https://gist.github.com/ngshiheng/35b5f067350e17e568c9dfbc011e8d8b
+https://velog.io/@combi_jihoon/GraphQL-Graphene-7Execution-Dataloader
 """
 
 
@@ -71,14 +71,25 @@ class DataLoaderBase(DataLoader):
         self.kwargs = kwargs
 
 
+class ArticlesByIdLoader(DataLoaderBase):
+
+    def batch_load_fn(self, article_ids):
+        article_by_article_id = defaultdict(list)
+
+        for article in Article.objects.filter(id__in=article_ids).iterator():
+            article_by_article_id[article.id].append(article)
+
+        return Promise.resolve([
+            article_by_article_id.get(article_id, []) for article_id in article_ids
+        ])
+
+
 class ArticlesByUserIdLoader(DataLoaderBase):
 
     def batch_load_fn(self, user_ids):
         article_by_user_id = defaultdict(list)
 
-        qs = ArticleFilter(self.kwargs, Article.objects.filter(creator_id__in=user_ids)).qs
-        for article in qs.iterator():
-            # for article in Article.objects.filter(creator_id__in=user_ids).iterator():
+        for article in Article.objects.filter(creator_id__in=user_ids).iterator():
             article_by_user_id[article.creator_id].append(article)
 
         return Promise.resolve([
@@ -113,8 +124,9 @@ class DataLoaders:
 
     def __init__(self):
         # self.articles_by_user_id = generate_loader_by_foreign_key(ArticleType, 'creator_id')
-        self.articles_by_user_id = ArticlesByUserIdLoader
-        self.article_count_by_user_id = ArticleCountByUserIdLoader
+        self.articles_by_id = ArticlesByIdLoader()
+        self.articles_by_user_id = ArticlesByUserIdLoader()
+        self.article_count_by_user_id = ArticleCountByUserIdLoader()
 
 
 class DataLoaderMiddleware:

@@ -7,6 +7,8 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphql import ResolveInfo
 from promise import Promise
 
+from app.articles.filters import ArticleFilter
+from app.articles.models import Article
 from app.articles.types import ArticleType
 from app.authentication.models import User
 from app.core.base_connections import PaginationConnection
@@ -48,15 +50,16 @@ class UserType(DjangoObjectType):
     # d_articles = PromiseDjangoFilterConnectionField(ArticleType, description="유저의 글")
 
     def resolve_d_articles(self: User, info: ResolveInfo, *args, **kwargs):
-        return info.context.loaders.articles_by_user_id(**kwargs).load(self.id)
-        # article_ids = ArticleFilter(
-        #     kwargs, Article.objects.filter(creator_id=self.id).all()
-        # ).qs.values_list('id', flat=True)
+        # return info.context.loaders.articles_by_user_id.load(self.id)
 
-        # return info.context.loaders.articles_by_user_id.load(self.id).then(get_sorter(article_ids))
+        article_ids = ArticleFilter(
+            kwargs, Article.objects.filter(creator_id=self.id).all()
+        ).qs.values_list('id', flat=True)
+        return info.context.loaders.articles_by_user_id.load(self.id).then(get_sorter(article_ids))
 
-# def get_sorter(ids):
-#     def order_by(items):
-#         return [{item.id: item for item in items}[id] for id in ids]
-#
-#     return order_by
+
+def get_sorter(ids):
+    def order_by(items):
+        return [{item.id: item for item in items}[id] for id in ids]
+
+    return order_by
