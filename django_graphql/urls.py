@@ -16,15 +16,19 @@ Including another URLconf
 from functools import cached_property
 
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 from graphene_django.views import GraphQLView
 
 from app.articles.views import ArticleView
 from app.authentication.views import UserAPIView
 from app.aws.views import S3StorageView
 from django_graphql.schema import schema
+
 
 class GQLContext:
     def __init__(self, request):
@@ -65,4 +69,12 @@ urlpatterns = [
     path("users", UserAPIView.as_view(), name='users-list'),
 
     path("aws/s3", S3StorageView.as_view(), name='aws-s3'),
-]
+
+    # Custom
+    path('openapi/', TemplateView.as_view(template_name="openapi.html")),
+    # YOUR PATTERNS
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Optional UI:
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

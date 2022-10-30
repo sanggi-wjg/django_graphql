@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "django_celery_results",
     'storages',
+    'drf_spectacular',
 
     "app.core",
     "app.authentication",
@@ -70,6 +71,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'django_graphql.urls'
+SCHEMA_CONF = 'django_graphql.schema'
 
 TEMPLATES = [
     {
@@ -134,6 +136,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -194,3 +200,7 @@ AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 AWS_STORAGE_BUCKET_NAME = 'bucket-sanggi-image'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
