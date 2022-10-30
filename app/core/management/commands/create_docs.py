@@ -16,12 +16,11 @@ class Scheme:
 
 
 def get_schemas():
-    schemas = set()
-    for name, klass in import_module(settings.SCHEMA_CONF).__dict__.items():
-        if 'Query' in name or 'Mutation' in name:
-            schemas.add((name, klass))
-
-    return schemas
+    return set([
+        (name, klass)
+        for name, klass in import_module(settings.SCHEMA_CONF).__dict__.items()
+        if 'Query' in name or 'Mutation' in name
+    ])
 
 
 def get_klass_description(klass, default=None):
@@ -31,6 +30,14 @@ def get_klass_description(klass, default=None):
             desc = klass._meta.description
 
     return desc
+
+
+def get_klass_input(klass):
+    if hasattr(klass, "Arguments"):
+        pass
+    input = {}
+
+    return input
 
 
 def create_yaml(schemas):
@@ -72,9 +79,34 @@ def create_yaml(schemas):
             'post': {
                 'tags': ["Query" if "Query" in name else "Mutation"],
                 'summary': get_klass_description(klass, default=name),
+                'requestBody': {
+                    'required': True,
+                    'content': {
+                        'application/json': {
+                            'schema': {
+                                'type': 'object',
+                                'properties': {
+                                    'username': {
+                                        'type': 'string'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 'responses': {
                     200: {
-                        'description': "200 success"
+                        'description': "200 success",
+                        'content': {
+                            'application/json': {
+                                'schema': {
+                                    'type': 'array',
+                                    'items': {
+                                        'type': 'string'
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -98,6 +130,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # https://editor.swagger.io/
+        # https://swagger.io/docs/specification/basic-structure/
         # https://support.smartbear.com/swaggerhub/docs/collaboration/index.html
         schema_generator = SchemaGenerator()
         schema_generator.generate()
