@@ -18,202 +18,6 @@ tags:
 - name: Mutation
   description: 뮤테이션
 paths:
-  /IsDuplicateEmailMutation:
-    summary: IsDuplicateEmailMutation
-    post:
-      tags:
-      - Mutation
-      summary: 이메일 중복 여부
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-      responses:
-        200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /Mutation:
-    summary: Mutation
-    post:
-      tags:
-      - Mutation
-      summary: Mutation
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-      responses:
-        200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /CreateArticleMutation:
-    summary: CreateArticleMutation
-    post:
-      tags:
-      - Mutation
-      summary: '@Exception
-
-        - CustomException : 커스텀 입셉션
-
-        - SomethingException : 뭔가 뭔가 입셉션'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-      responses:
-        200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /UpdateArticleMutation:
-    summary: UpdateArticleMutation
-    post:
-      tags:
-      - Mutation
-      summary: 게시글 수정
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-      responses:
-        200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /CreateCommentMutation:
-    summary: CreateCommentMutation
-    post:
-      tags:
-      - Mutation
-      summary: CreateCommentMutation
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-      responses:
-        200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /Query:
-    summary: Query
-    post:
-      tags:
-      - Query
-      summary: Query
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-      responses:
-        200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /UserQuery:
-    summary: UserQuery
-    post:
-      tags:
-      - Query
-      summary: UserQuery
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-      responses:
-        200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /ArticleQuery:
-    summary: ArticleQuery
-    post:
-      tags:
-      - Query
-      summary: ArticleQuery
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-      responses:
-        200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
   /GetOutboundInvoiceMutation:
     summary: GetOutboundInvoiceMutation
     post:
@@ -227,23 +31,27 @@ paths:
             schema:
               type: object
               properties:
-                username:
-                  type: string
+                product_code:
+                  type: String
       responses:
         200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-  /DeleteArticleMutation:
-    summary: DeleteArticleMutation
+          description: whether success or fail, it always 200
+  /Query:
+    summary: Query
+    post:
+      tags:
+      - Query
+      summary: Query
+      requestBody: {}
+      responses:
+        200:
+          description: whether success or fail, it always 200
+  /CreateCommentMutation:
+    summary: CreateCommentMutation
     post:
       tags:
       - Mutation
-      summary: DeleteArticleMutation
+      summary: CreateCommentMutation
       requestBody:
         required: true
         content:
@@ -251,14 +59,118 @@ paths:
             schema:
               type: object
               properties:
-                username:
+                content:
                   type: string
+                user_id:
+                  type: ID
+                article_id:
+                  type: ID
       responses:
         200:
-          description: 200 success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
+          description: whether success or fail, it always 200
+  /Mutation:
+    summary: Mutation
+    post:
+      tags:
+      - Mutation
+      summary: Mutation
+      requestBody: {}
+      responses:
+        200:
+          description: whether success or fail, it always 200
+  /DeleteArticleMutation:
+    summary: DeleteArticleMutation
+    post:
+      tags:
+      - Mutation
+      summary: DeleteArticleMutation
+      requestBody: {}
+      responses:
+        200:
+          description: whether success or fail, it always 200
+  /UpdateArticleMutation:
+    summary: UpdateArticleMutation
+    post:
+      tags:
+      - Mutation
+      summary: 게시글 수정
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: String
+                content:
+                  type: String
+      responses:
+        200:
+          description: whether success or fail, it always 200
+  /ArticleQuery:
+    summary: ArticleQuery
+    post:
+      tags:
+      - Query
+      summary: ArticleQuery
+      requestBody: {}
+      responses:
+        200:
+          description: whether success or fail, it always 200
+  /CreateArticleMutation:
+    summary: CreateArticleMutation
+    post:
+      tags:
+      - Mutation
+      summary: CreateArticleMutation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: String
+                content:
+                  type: String
+                creator_id:
+                  type: ID
+      responses:
+        200:
+          description: whether success or fail, it always 200
+        CustomException:
+          description: 커스텀 입셉션
+        SomethingException:
+          description: 뭔가 뭔가 입셉션
+  /UserQuery:
+    summary: UserQuery
+    post:
+      tags:
+      - Query
+      summary: UserQuery
+      requestBody: {}
+      responses:
+        200:
+          description: whether success or fail, it always 200
+  /IsDuplicateEmailMutation:
+    summary: IsDuplicateEmailMutation
+    post:
+      tags:
+      - Mutation
+      summary: 이메일 중복 여부
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: String
+      responses:
+        200:
+          description: whether success or fail, it always 200
+
+

@@ -4,7 +4,7 @@ import yaml
 from django.conf import settings
 from django.core.management import BaseCommand
 
-from app.core.colorful import yellow
+from app.core.colorful import yellow, green
 
 
 class Scheme:
@@ -32,12 +32,45 @@ def get_klass_description(klass, default=None):
     return desc
 
 
-def get_klass_input(klass):
-    if hasattr(klass, "Arguments"):
-        pass
-    input = {}
+def get_klass_request_body(klass):
+    request_body = {}
+    if hasattr(klass, "_meta") and hasattr(klass._meta, 'arguments'):
+        input = klass._meta.arguments.get('input')
+        if input is None:
+            return request_body
 
-    return input
+        request_body = {
+            'required': input.kwargs.get('required', False),
+            'content': {
+                'application/json': {
+                    'schema': {
+                        'type': 'object',
+                        'properties': {
+                            field: {
+                                'type': field_klass.type.of_type._meta.name.lower()
+                            }
+                            for field, field_klass in input._meta.fields.items()
+                        }
+                    }
+                }
+            }
+        }
+    return request_body
+
+
+def get_klass_responses(klass):
+    responses = {
+        200: {'description': "whether success or fail, it always 200"}
+    }
+    if hasattr(klass, 'help'):
+        exceptions = [msg.strip() for msg in getattr(klass, 'help').strip().split('\n')]
+
+        for exception in exceptions:
+            exc, exc_msg = exception.split(":")
+            responses[exc.strip()] = {
+                'description': exc_msg.strip()
+            }
+    return responses
 
 
 def create_yaml(schemas):
@@ -79,36 +112,8 @@ def create_yaml(schemas):
             'post': {
                 'tags': ["Query" if "Query" in name else "Mutation"],
                 'summary': get_klass_description(klass, default=name),
-                'requestBody': {
-                    'required': True,
-                    'content': {
-                        'application/json': {
-                            'schema': {
-                                'type': 'object',
-                                'properties': {
-                                    'username': {
-                                        'type': 'string'
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                'responses': {
-                    200: {
-                        'description': "200 success",
-                        'content': {
-                            'application/json': {
-                                'schema': {
-                                    'type': 'array',
-                                    'items': {
-                                        'type': 'string'
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                'requestBody': get_klass_request_body(klass),
+                'responses': get_klass_responses(klass)
             }
         }
 
@@ -123,6 +128,9 @@ class SchemaGenerator:
     def generate(self):
         yaml_content = create_yaml(self.schemas)
         yellow(yaml_content)
+
+        # with open(settings.STATICFILES_DIRS[0], 'w') as f:
+        #     f.write(yaml_content)
 
 
 class Command(BaseCommand):

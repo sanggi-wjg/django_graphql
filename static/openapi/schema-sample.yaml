@@ -1,0 +1,264 @@
+openapi: 3.0.0
+info:
+  title: OpenAPI Demo
+  version: 0.0.1
+externalDocs:
+  description: OpenAPI Demo
+  url: http://localhost/graphql
+servers:
+- url: http://localhost:{port}/graphql
+  variables:
+    port:
+      enum:
+      - '8000'
+      default: '8000'
+tags:
+- name: Query
+  description: 쿼리
+- name: Mutation
+  description: 뮤테이션
+paths:
+  /IsDuplicateEmailMutation:
+    summary: IsDuplicateEmailMutation
+    post:
+      tags:
+      - Mutation
+      summary: 이메일 중복 여부
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /Mutation:
+    summary: Mutation
+    post:
+      tags:
+      - Mutation
+      summary: Mutation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /CreateArticleMutation:
+    summary: CreateArticleMutation
+    post:
+      tags:
+      - Mutation
+      summary: '@Exception
+
+        - CustomException : 커스텀 입셉션
+
+        - SomethingException : 뭔가 뭔가 입셉션'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /UpdateArticleMutation:
+    summary: UpdateArticleMutation
+    post:
+      tags:
+      - Mutation
+      summary: 게시글 수정
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /CreateCommentMutation:
+    summary: CreateCommentMutation
+    post:
+      tags:
+      - Mutation
+      summary: CreateCommentMutation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /Query:
+    summary: Query
+    post:
+      tags:
+      - Query
+      summary: Query
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /UserQuery:
+    summary: UserQuery
+    post:
+      tags:
+      - Query
+      summary: UserQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /ArticleQuery:
+    summary: ArticleQuery
+    post:
+      tags:
+      - Query
+      summary: ArticleQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /GetOutboundInvoiceMutation:
+    summary: GetOutboundInvoiceMutation
+    post:
+      tags:
+      - Mutation
+      summary: 출고 주문 송장 정보 가져오기
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /DeleteArticleMutation:
+    summary: DeleteArticleMutation
+    post:
+      tags:
+      - Mutation
+      summary: DeleteArticleMutation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: 200 success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string

@@ -28,10 +28,9 @@ class CreateArticleMutation(graphene.Mutation):
     class Arguments:
         input = CreateArticleInput(required=True)
 
-    __doc__ = """
-    @Exception
-    - CustomException : 커스텀 입셉션
-    - SomethingException : 뭔가 뭔가 입셉션
+    help = """
+    CustomException : 커스텀 입셉션
+    SomethingException : 뭔가 뭔가 입셉션
     """
 
     article = graphene.Field(ArticleType)
